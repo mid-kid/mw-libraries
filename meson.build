@@ -5,4 +5,5 @@ fixar = executable('fixar', 'fixar.c', c_args: ['-Wall', '-Wextra'], native: tru
 
 install_base = get_option('libdir') / 'metroskrew/sdk/' + get_option('libver')
 
+subdir('ARM_EABI_Support/Mathlib')
 subdir('ARM_EABI_Support/Runtime')
