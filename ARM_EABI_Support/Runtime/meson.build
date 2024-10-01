@@ -114,7 +114,6 @@ args_t_le_pic_pid = [
   '-pic',
   '-pid'
 ]
-
 variants = {
   'A_LE': args_a_le,
   'Ai_LE': args_ai_le,
@@ -125,7 +124,6 @@ variants = {
 }
 
 NITRO_Runtime_libs = []
-
 foreach var_suff, var_args : variants
   var_sources = sources
   if var_suff.startswith('T_')

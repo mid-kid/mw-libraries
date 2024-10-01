@@ -68,9 +68,9 @@ struct name *build_names(unsigned count, char *innames[])
         s = p + 1;
 
         // Strip the filename extension
-        char *d = s + l;
-        while (d > s) if (*--d == '.') break;
-        if (d <= s) d = s + l;
+        char *d = s;
+        while (d < s + l) if (*d++ == '.') break;
+        d--;
 
         // Convert to lowercase and append .o
         char *n = names[i].name;
