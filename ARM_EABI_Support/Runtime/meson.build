@@ -1,3 +1,5 @@
+install_sub = install_base / 'Runtime'
+
 sources = [
   '(Runtime_Common)/vla_alloc.c',
   '(Runtime_Common)/cxxabi/cxxabi_clear.c',
@@ -122,6 +124,8 @@ variants = {
   'T_LE_PIC_PID': args_t_le_pic_pid
 }
 
+NITRO_Runtime_libs = []
+
 foreach var_suff, var_args : variants
   var_sources = sources
   if var_suff.startswith('T_')
@@ -137,9 +141,14 @@ foreach var_suff, var_args : variants
     name_prefix: '',
     name_suffix: 'a.in')
 
-  lib = custom_target(
+  NITRO_Runtime_libs += custom_target(
     input: lib_in,
     output: 'NITRO_Runtime_' + var_suff + '.a',
     command: [fixar, '@OUTPUT@', '@INPUT@', var_sources],
-    build_by_default: true)
+    install: true,
+    install_dir: install_sub / 'Runtime_ARM/Runtime_NITRO/Lib')
 endforeach
+
+install_headers(
+  'Runtime_ARM/Runtime_NITRO/Common_Includes/alloca.h',
+  install_dir: install_sub / 'Runtime_ARM/Runtime_NITRO/Common_Includes')

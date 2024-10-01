@@ -3,10 +3,22 @@ MESON ?= meson
 CROSS := meson/mwccarm.ini
 
 build := build
+libver := dsi/1.6sp1
 
 .PHONY: all
 all: $(build)/build.ninja
 	$(MESON) compile -C build
+
+.PHONY: check
+check: package
+	cat sums/$(libver)/lib.sum | ( \
+		cd $(build)/install/lib/metroskrew/sdk/$(libver) && \
+		sha1sum -c - )
+
+.PHONY: package
+package: $(build)/build.ninja
+	rm -rf $(build)/install
+	$(MESON) install -C $(build) --destdir install
 
 .PHONY: clean
 clean:
@@ -19,4 +31,5 @@ distclean:
 	$(MESON) subprojects purge --confirm || true
 
 $(build)/build.ninja:
-	$(MESON) setup $(build) --cross-file $(CROSS)
+	$(MESON) setup $(build) --cross-file $(CROSS) \
+		--prefix / -Dlibver=$(libver)
