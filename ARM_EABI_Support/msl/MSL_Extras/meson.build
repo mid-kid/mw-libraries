@@ -1,0 +1,120 @@
+install_sub = install_base / 'msl/MSL_Extras'
+
+sources = [
+  'MSL_Common/Src/extras.c'
+]
+
+include_dirs = [
+  '../MSL_C/MSL_Common/Include',
+  '../MSL_C/MSL_ARM/Include',
+  'MSL_Common/Include',
+  'MSL_ARM/Include'
+]
+
+args = [
+  '-sym', 'off',
+  '-opt', 'level=4,speed',
+  '-inline', 'smart,bottomup',
+  '-ipa', 'file',
+  '-noconstpool',
+  '-char', 'unsigned',
+  '-Cpp_exceptions', 'off',
+  '-str', 'reuse',
+  '-I-',
+  '-prefix', 'PREFIX_NITRO.h'
+]
+
+args_a_le = [
+  '-proc', 'arm946e',
+  '-little',
+  '-nointerworking'
+]
+args_ai_le = [
+  '-proc', 'arm946e',
+  '-little',
+  '-interworking'
+]
+args_t_le = [
+  '-proc', 'arm946e',
+  '-little',
+  '-thumb',
+  '-interworking'
+]
+args_a_le_pic_pid = [
+  '-proc', 'arm946e',
+  '-little',
+  '-nointerworking',
+  '-pic',
+  '-pid'
+]
+args_ai_le_pic_pid = [
+  '-proc', 'arm946e',
+  '-little',
+  '-interworking',
+  '-pic',
+  '-pid'
+]
+args_t_le_pic_pid = [
+  '-proc', 'arm946e',
+  '-little',
+  '-thumb',
+  '-interworking',
+  '-pic',
+  '-pid'
+]
+variants = {
+  'A_LE': args_a_le,
+  'Ai_LE': args_ai_le,
+  'T_LE': args_t_le,
+  'A_LE_PIC_PID': args_a_le_pic_pid,
+  'Ai_LE_PIC_PID': args_ai_le_pic_pid,
+  'T_LE_PIC_PID': args_t_le_pic_pid
+}
+
+MSL_Extras_NITRO_libs = []
+foreach var_suff, var_args : variants
+  var_sources = sources
+
+  lib_in = static_library('MSL_Extras_NITRO_' + var_suff, var_sources,
+    c_args: [args, var_args],
+    cpp_args: [args, var_args],
+    include_directories: include_dirs,
+    build_by_default: false,
+    pic: false,
+    name_prefix: '',
+    name_suffix: 'a.in')
+
+  MSL_Extras_NITRO_libs += custom_target(
+    input: lib_in,
+    output: 'MSL_Extras_NITRO_' + var_suff + '.a',
+    command: [fixar, '@OUTPUT@', '@INPUT@', var_sources],
+    install: true,
+    install_dir: install_sub / 'MSL_ARM/Lib')
+endforeach
+
+install_headers(
+  'MSL_ARM/Include/extras.ARM.h',
+  'MSL_ARM/Include/utime.ARM.h',
+  install_dir: install_sub / 'MSL_ARM/Include')
+
+install_headers(
+  'MSL_Common/Include/dirent.h',
+  'MSL_Common/Include/extras.h',
+  'MSL_Common/Include/extras_io.h',
+  'MSL_Common/Include/extras_malloc.h',
+  'MSL_Common/Include/extras_stdlib.h',
+  'MSL_Common/Include/extras_string.h',
+  'MSL_Common/Include/extras_time.h',
+  'MSL_Common/Include/extras_wchar.h',
+  'MSL_Common/Include/fcntl.h',
+  'MSL_Common/Include/unistd.h',
+  'MSL_Common/Include/unistd_api.h',
+  'MSL_Common/Include/unix.h',
+  'MSL_Common/Include/utime.h',
+  install_dir: install_sub / 'MSL_Common/Include')
+
+install_headers(
+  'MSL_Common/Include/sys/stat.h',
+  'MSL_Common/Include/sys/timeb.h',
+  'MSL_Common/Include/sys/utsname.h',
+  install_dir: install_sub / 'MSL_Common/Include/sys')

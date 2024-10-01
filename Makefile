@@ -13,7 +13,7 @@ all: $(build)/build.ninja
 check: package
 	cat sums/$(libver)/lib.sum | ( \
 		cd $(build)/install/lib/metroskrew/sdk/$(libver) && \
-		sha1sum -c - )
+		sha1sum --quiet -c - )
 
 .PHONY: package
 package: $(build)/build.ninja
