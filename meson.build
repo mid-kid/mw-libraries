@@ -38,8 +38,9 @@ lib_variants = {
   'T_LE_PIC_PID': [args_t_le, args_pic_pid]
 }
 
-subdir('ARM_EABI_Support/Mathlib')
-subdir('ARM_EABI_Support/Runtime')
 subdir('ARM_EABI_Support/msl/MSL_C')
 subdir('ARM_EABI_Support/msl/MSL_C++')
 subdir('ARM_EABI_Support/msl/MSL_Extras')
+subdir('ARM_EABI_Support/Mathlib')
+subdir('ARM_EABI_Support/Runtime')
+subdir('ARM_EABI_Support/Profiler')

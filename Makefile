@@ -11,7 +11,10 @@ all: $(build)/build.ninja
 
 .PHONY: check
 check: package
-	cat sums/$(libver)/lib.sum | ( \
+	cat sums/$(libver)/lib.sum | grep -v 'ProfileLibrary' | ( \
+		cd $(build)/install/lib/metroskrew/sdk/$(libver) && \
+		sha1sum --quiet -c - )
+	cat sums/$(libver)/profiler.sum | ( \
 		cd $(build)/install/lib/metroskrew/sdk/$(libver) && \
 		sha1sum --quiet -c - )
 
