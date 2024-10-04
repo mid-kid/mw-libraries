@@ -11,6 +11,11 @@ a84b3f7f9ffebc09ea2fb1c1e0fe535661f5efb9 *./Mathlib/lib/FP_fullI_v4t_LE.a
 0f9e4bbafc24b0142327360dab1b2470bb9f7736 *./Mathlib/lib/FP_fullI_v5t_LE.a
 fc798bcb810f42f2f7a50e8eafa130bc72d45d8c *./Mathlib/lib/FP_fullI_xM_LE.a
 d8ac547de7cf27e9088d75e607af9c0bc7209fef *./Mathlib/readme.txt
+62d161da937c3deb8635a94e13796a8db361dfbd *./Profiler/Lib/ProfileLibrary_A_LE.a
+a7a10246e4c317846ff67ec58709a0430b684e48 *./Profiler/Lib/ProfileLibrary_A_LE_strb.a
+692f55d77609fd5f76bb1227070537f3016207cf *./Profiler/Lib/ProfileLibrary_Ai_LE.a
+8b3e0632d8f2d2d34ccb9ddc11611e96405df956 *./Profiler/Lib/ProfileLibrary_Ai_LE_strb.a
+2e9a2877fefe129ef4b8bdf7a661ae8866465b1f *./Profiler/include/Profiler.h
 10b4871c6783ad7729c2e0537930a7833bbccdfc *./Runtime/Lib/NITRO_Runtime_A_LE.a
 0f2c98dad7a2442391f3ba7a7863be46bcfb8467 *./Runtime/Lib/NITRO_Runtime_A_LE_PIC_PID.a
 c05ba03cc8a775115782b702f976554c8170bc96 *./Runtime/Lib/NITRO_Runtime_A_LE_PIC_PID_strb.a
