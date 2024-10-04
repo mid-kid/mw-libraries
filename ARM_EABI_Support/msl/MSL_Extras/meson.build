@@ -12,8 +12,7 @@ include_dirs = [
 ]
 
 args = [
-  args_base,
-  '-prefix', 'PREFIX_NITRO.h'
+  args_base
 ]
 
 MSL_Extras_NITRO_libs = []

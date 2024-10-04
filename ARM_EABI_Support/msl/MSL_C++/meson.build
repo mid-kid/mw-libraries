@@ -22,7 +22,6 @@ include_dirs = [
 
 args = [
   args_base,
-  '-inline', 'level=8,bottomup',
   '-Cpp_exceptions', 'on'
 ]
 

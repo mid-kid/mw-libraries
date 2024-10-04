@@ -140,7 +140,6 @@ include_dirs = [
   'MSL_Common/Include',
   'MSL_ARM/Include',
   'MSL_Common_Embedded/Math/Include',
-  'MSL_Common/Src',
   '../MSL_Extras/MSL_Common/Include',
   '../../../NitroSDK/include'
 ]

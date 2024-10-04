@@ -53,8 +53,6 @@ include_dirs = [
   '../msl/MSL_C/MSL_ARM/Include',
   '../msl/MSL_C++/MSL_Common/Include',
   '../msl/MSL_C++/MSL_ARM/Include',
-  '../msl/MSL_Extras/MSL_Common/Include',
-  '../Mathlib/lib',
   '(Runtime_Common)',
   '(Runtime_Common)/MWRuntime',
   '(Runtime_Common)/cxxabi',
