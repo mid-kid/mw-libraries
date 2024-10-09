@@ -3,11 +3,14 @@ MESON ?= meson
 CROSS := meson/mwccarm.ini
 
 build := build
+
 libver := dsi/1.6sp1
 
+build_ver := $(build)/$(subst /,_,$(libver))
+
 .PHONY: all
-all: $(build)/build.ninja
-	$(MESON) compile -C build
+all: $(build_ver)/build.ninja
+	$(MESON) compile -C $(build_ver)
 
 .PHONY: check
 check: package
@@ -19,20 +22,20 @@ check: package
 		sha1sum --quiet -c - )
 
 .PHONY: package
-package: $(build)/build.ninja
-	rm -rf $(build)/install
-	$(MESON) install -C $(build) --destdir install
+package: $(build_ver)/build.ninja
+	$(MESON) install -C $(build_ver) --destdir ../install
 
 .PHONY: clean
 clean:
-	! test -f $(build)/build.ninja || \
-		$(MESON) compile -C $(build) --clean
+	! test -f $(build_ver)/build.ninja || \
+		$(MESON) compile -C $(build_ver) --clean
 
 .PHONY: distclean
 distclean:
 	rm -rf $(build)
 	$(MESON) subprojects purge --confirm || true
 
-$(build)/build.ninja:
-	$(MESON) setup $(build) --cross-file $(CROSS) \
+$(build_ver)/build.ninja:
+	mkdir -p $(build_ver)
+	$(MESON) setup $(build_ver) --cross-file $(CROSS) \
 		--prefix / -Dlibver=$(libver)
