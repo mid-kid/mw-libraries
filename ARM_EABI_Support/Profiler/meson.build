@@ -19,22 +19,22 @@ include_dirs = [
 ]
 
 args = [
-  '-sym', 'off',
+  args_base,
   '-wrap:ver', '4.0-1034',
   '-wrap:hack01', '0004',
+  '-warnings', 'off',
   '-lang', 'c++',
+  '-ipa', 'off',
   '-opt', 'level=0,speed',
-  '-Cpp_exceptions', 'off',
   '-char', 'signed',
-  '-DLITTLE_ENDIAN',
-  '-I-'
+  '-DLITTLE_ENDIAN'
 ]
 
 args_a_le = [
-  #'-proc', 'arm946e'
+  '-proc', 'arm7tdmi'
 ]
 args_ai_le = [
-  #'-proc', 'arm946e',
+  '-proc', 'arm7tdmi',
   '-interworking'
 ]
 variants = {
