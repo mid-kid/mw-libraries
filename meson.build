@@ -1,11 +1,22 @@
 project('mw-libraries', ['c', 'cpp'],
   meson_version: '>=1.2.0')
 
+libver = get_option('libver')
+
+m4 = find_program('m4')
+m4_cmd = [m4, '-DLIBVER=' + libver, '@INPUT@']
+
 fixar = executable('fixar', 'fixar.c', c_args: ['-Wall', '-Wextra'], native: true)
 
-install_base = get_option('libdir') / 'metroskrew/sdk/' + get_option('libver')
+install_base = get_option('libdir') / 'metroskrew/sdk/' + libver
+
+mwccarm_ver = '4.0-1051'
+if libver == 'dsi/1.3'
+  mwccarm_ver = '4.0-1034'
+endif
 
 args_base = [
+  '-wrap:ver', mwccarm_ver,
   '-sym', 'off',
   '-opt', 'level=4,speed',
   '-ipa', 'file',

@@ -13,10 +13,23 @@ sources = [
   'MSL_Common/Src/strstream.cpp'
 ]
 
+headers_gen = []
+subdir('MSL_Common/Include')
+
+MSL_CPP_NITRO_dep = declare_dependency(
+  sources: headers_gen,
+  include_directories: [
+    'MSL_Common/Include',
+    'MSL_ARM/Include'
+  ]
+)
+
+dependencies = [
+  MSL_CPP_NITRO_dep
+]
+
 include_dirs = [
-  'MSL_Common/Include',
   '../MSL_C/MSL_Common/Include',
-  'MSL_ARM/Include',
   '../MSL_C/MSL_ARM/Include'
 ]
 
@@ -32,6 +45,7 @@ foreach var_suff, var_args : lib_variants
   lib_in = static_library('MSL_CPP_NITRO_' + var_suff, var_sources,
     c_args: [args, var_args],
     cpp_args: [args, var_args],
+    dependencies: dependencies,
     include_directories: include_dirs,
     build_by_default: false,
     pic: false,
@@ -97,7 +111,6 @@ install_headers(
   'MSL_Common/Include/iostream.h',
   'MSL_Common/Include/istream',
   'MSL_Common/Include/istream.h',
-  'MSL_Common/Include/iterator',
   'MSL_Common/Include/iterator.h',
   'MSL_Common/Include/limits',
   'MSL_Common/Include/list',

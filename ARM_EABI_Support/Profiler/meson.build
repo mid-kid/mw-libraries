@@ -10,12 +10,14 @@ sources = [
   'Source/ProfilerARMIO.c'
 ]
 
+dependencies = [
+  MSL_CPP_NITRO_dep
+]
+
 include_dirs = [
   'include',
   '../msl/MSL_C/MSL_ARM/Include',
   '../msl/MSL_C/MSL_Common/Include',
-  '../msl/MSL_C++/MSL_ARM/Include',
-  '../msl/MSL_C++/MSL_Common/Include'
 ]
 
 args = [
@@ -49,6 +51,7 @@ foreach var_suff, var_args : variants
   lib_in = static_library('ProfileLibrary_' + var_suff, var_sources,
     c_args: [args, var_args],
     cpp_args: [args, var_args],
+    dependencies: dependencies,
     include_directories: include_dirs,
     build_by_default: false,
     pic: false,

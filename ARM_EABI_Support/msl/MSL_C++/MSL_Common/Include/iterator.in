@@ -1,8 +1,16 @@
 /* MSL
  * Copyright © 1995-2007 Freescale Corporation.  All rights reserved.
  *
+ifelse(
+LIBVER, `dsi/1.3', `dnl
+ * $Date: 2007/11/26 21:34:59 $
+ * $Revision: 1.62.2.1 $
+define(`CONST_REFERENCE', `const_reference')dnl
+', `dnl
  * $Date: 2010/07/20 05:08:23 $
  * $Revision: 1.62.2.2 $
+define(`CONST_REFERENCE', `typename Container::const_reference')dnl
+')dnl
  */
 
 // iterator
@@ -923,7 +931,7 @@ public:
 		typename Container::const_reference const>::type const_reference;
 
 	explicit back_insert_iterator(Container& x);
-	back_insert_iterator& operator=(typename Container::const_reference value);
+	back_insert_iterator& operator=(CONST_REFERENCE value);
 #ifdef _MSL_MOVE
 	back_insert_iterator& operator=(typename Container::value_type&& value)
 		{container->push_back(_STD::move(value)); return *this;}
@@ -944,7 +952,7 @@ back_insert_iterator<Container>::back_insert_iterator(Container& x)
 template <class Container>
 inline
 back_insert_iterator<Container>&
-back_insert_iterator<Container>::operator=(typename Container::const_reference value)
+back_insert_iterator<Container>::operator=(CONST_REFERENCE value)
 {
 	container->push_back(value);
 	return *this;
@@ -2417,4 +2425,4 @@ bool operator >=(const __debug_iterator<Container, I1, relax>& x, const __debug_
 // hh 031202 Removed iterator_traits workaround for lack of partial specialization
 // hh 031217 Added full suite of is_iterator predicates
 // hh 050420 Implemented lwg 280 for reverse_iterator
-// cc 070802 Adding Boost Fix Ticket #9 - std::vector<bool>::const_reference (Sec24\4_2_5\P24043.C)
+// cc 070802 Adding Boost Fix Ticket `#'9 - std::vector<bool>::const_reference (Sec24\4_2_5\P24043.C)dnl
