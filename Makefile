@@ -5,9 +5,20 @@ CROSS := meson/mwccarm.ini
 build := build
 
 libver := dsi/1.6sp1
-libver := dsi/1.3
+libver_all := dsi/1.6sp1 dsi/1.3
 
 build_ver := $(build)/$(subst /,_,$(libver))
+
+.PHONY: checkall
+checkall:
+define defver
+ver := $$(subst /,_,$1)
+checkall: lib-$$(ver)
+.PHONY: lib-$$(ver)
+lib-$$(ver):
+	$(MAKE) libver=$1 check
+endef
+$(foreach v,$(libver_all),$(eval $(call defver,$(v))))
 
 .PHONY: all
 all: $(build_ver)/build.ninja
