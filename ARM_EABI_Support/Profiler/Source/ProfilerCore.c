@@ -737,11 +737,13 @@ static OSErr WriteToBuffer(WriteBufferType *buffer, void *info, short size)
 	return error;
 } // WriteToBuffer
 
+#ifndef LIBVER_dsi_1_2
 int compare_offset(const void * lhs,const void * rhs)
 {
  if(((NameOffsetEntryPtr)lhs)->offset  ==  ((NameOffsetEntryPtr)rhs)->offset) return 0;
   return ((NameOffsetEntryPtr)lhs)->offset  >  ((NameOffsetEntryPtr)rhs)->offset?1:-1;	
 }
+#endif
 /* ------------------------------------------------------------------
  * WriteData
  *
@@ -751,6 +753,83 @@ int compare_offset(const void * lhs,const void * rhs)
 OSErr WriteData(ProfilerGlobalsPtr globals, short refNum, memFunctionInfo *functionBase,
 	 long limit, long *nameSizeParam, long functOffset, long diskOffset)
 {
+#ifdef LIBVER_dsi_1_2
+	OSErr				error = noErr;
+	long				i;
+	diskFunctionInfoV3	fInfo;
+	functionInfoPtr		fp;
+	long				Shared = -1L;
+	NameOffsetEntryPtr	nameOffsetPtr;
+	long				nameOffset = 0L;
+	WriteBufferType		functions;
+	WriteBufferType		names;
+    
+	nameOffsetPtr = (NameOffsetEntryPtr)globals->nameOffsetPtr;
+
+	error = InitializeWriteBuffer(&functions, refNum, functOffset);
+	if (error == noErr)
+	{
+		error = InitializeWriteBuffer(&names, refNum, diskOffset);
+		if (error == noErr)
+		{
+			if (globals->header.method == collectSummary)
+				i = 0;	/* don't skip first element */
+			else
+				i = 1;	/* collect detailed - skip the first element, fake main */
+			
+			for (; error == noErr && i < limit; i++)
+			{
+				fp = &globals->functionBufferPtr[i];
+							
+			    // to be removed: for debugging only
+//				printf( "Function name: %s\n", fp -> name );
+//				printf( "         time: %lld\n", fp -> functionOnly );
+//				printf( "         with children: %lld\n\n", fp -> functionAndChildren );
+		
+				if (globals->header.method == collectDetailed)
+				{
+					Shared = FindInOffsetTable(globals, nameOffsetPtr, fp->name, nameOffset);
+				} // 
+				
+				if (Shared != -1L)
+				{
+					ASSERT(Shared >= 0 && Shared <= nameOffset);
+					fInfo.nameOffset = Shared;
+				}
+				else
+				{
+					fInfo.nameOffset = nameOffset;
+				}
+					
+				fInfo.count = fp->count;
+				fInfo.functionOnly = SWAP( fp->functionOnly );
+				fInfo.functionAndChildren = SWAP( fp->functionAndChildren );
+				fInfo.min = SWAP( fp->min );
+				fInfo.max = SWAP( fp->max );
+				fInfo.next = fp->next ? (fp->next - functionBase) : -1L;
+				ASSERT(fInfo.next == -1L || (fInfo.next > i && fInfo.next < limit));
+				fInfo.children = fp->children ? (fp->children - functionBase) : -1L;
+				ASSERT(fInfo.children == -1L || (fInfo.children > i && fInfo.children < limit));
+				fInfo.stackSpace = fp->stackDepth;
+			
+				error = WriteToBuffer(&functions, &fInfo, sizeof(fInfo));
+				if (error == noErr && Shared == -1L)
+				{
+					long	size;
+
+					size = my_strlen(fp->name);
+					error = WriteToBuffer(&names, fp->name, size);
+					nameOffset += size;
+				}
+			}
+			error = FlushWriteBuffer(&functions, true);
+			if (error == noErr)
+				error = FlushWriteBuffer(&names, true);
+		}
+	}
+	*nameSizeParam = nameOffset;
+	return error;
+#else
 	OSErr				error = noErr;
 	long				i;
 	diskFunctionInfoV3	fInfo;
@@ -828,6 +907,7 @@ OSErr WriteData(ProfilerGlobalsPtr globals, short refNum, memFunctionInfo *funct
 	}
 	*nameSizeParam = nameOffset;
 	return error;
+#endif
 } // WriteData
 
 /* ------------------------------------------------------------------

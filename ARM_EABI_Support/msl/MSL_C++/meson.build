@@ -25,6 +25,7 @@ MSL_CPP_NITRO_dep = declare_dependency(
 )
 
 dependencies = [
+  MSL_C_NITRO_dep,
   MSL_CPP_NITRO_dep
 ]
 

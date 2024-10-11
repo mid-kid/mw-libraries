@@ -136,9 +136,21 @@ sources = [
   'MSL_Common_Embedded/Math/Double_precision/w_sqrt.c'
 ]
 
+headers_gen = []
+subdir('MSL_Common/Include')
+MSL_C_NITRO_dep = declare_dependency(
+  sources: headers_gen,
+  include_directories: [
+    'MSL_Common/Include',
+    'MSL_ARM/Include'
+  ]
+)
+
+dependencies = [
+  MSL_C_NITRO_dep
+]
+
 include_dirs = [
-  'MSL_Common/Include',
-  'MSL_ARM/Include',
   'MSL_Common_Embedded/Math/Include',
   '../MSL_Extras/MSL_Common/Include',
   '../../../NitroSDK/include'
@@ -156,6 +168,7 @@ foreach var_suff, var_args : lib_variants
   lib_in = static_library('MSL_C_NITRO_' + var_suff, var_sources,
     c_args: [args, var_args],
     cpp_args: [args, var_args],
+    dependencies: dependencies,
     include_directories: include_dirs,
     build_by_default: false,
     pic: false,
@@ -286,7 +299,6 @@ install_headers(
   'MSL_Common/Include/stdio.posix.h',
   'MSL_Common/Include/stdio_api.h',
   'MSL_Common/Include/stdlib.h',
-  'MSL_Common/Include/string.h',
   'MSL_Common/Include/string_api.h',
   'MSL_Common/Include/strtold.h',
   'MSL_Common/Include/strtoul.h',

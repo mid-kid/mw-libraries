@@ -11,19 +11,25 @@ sources = [
 ]
 
 dependencies = [
+  MSL_C_NITRO_dep,
   MSL_CPP_NITRO_dep
 ]
 
 include_dirs = [
-  'include',
-  '../msl/MSL_C/MSL_ARM/Include',
-  '../msl/MSL_C/MSL_Common/Include',
+  'include'
 ]
+
+wrap_ver = '4.0-1034'
+wrap_hack01 = '0004'
+if libver == 'dsi/1.2'
+  wrap_ver = '4.0-1018'
+  wrap_hack01 = '0'
+endif
 
 args = [
   args_base,
-  '-wrap:ver', '4.0-1034',
-  '-wrap:hack01', '0004',
+  '-wrap:ver', wrap_ver,
+  '-wrap:hack01', wrap_hack01,
   '-warnings', 'off',
   '-lang', 'c++',
   '-ipa', 'off',

@@ -1,12 +1,14 @@
 install_sub = install_base / 'msl/MSL_Extras'
 
+dependencies = [
+  MSL_C_NITRO_dep
+]
+
 sources = [
   'MSL_Common/Src/extras.c'
 ]
 
 include_dirs = [
-  '../MSL_C/MSL_Common/Include',
-  '../MSL_C/MSL_ARM/Include',
   'MSL_Common/Include',
   'MSL_ARM/Include'
 ]
@@ -22,6 +24,7 @@ foreach var_suff, var_args : lib_variants
   lib_in = static_library('MSL_Extras_NITRO_' + var_suff, var_sources,
     c_args: [args, var_args],
     cpp_args: [args, var_args],
+    dependencies: dependencies,
     include_directories: include_dirs,
     build_by_default: false,
     pic: false,

@@ -48,11 +48,12 @@ sources_t = [
   'Runtime_ARM/(Common_Source)/ExceptionHandlerTS.cpp'
 ]
 
+dependencies = [
+  MSL_C_NITRO_dep,
+  MSL_CPP_NITRO_dep
+]
+
 include_dirs = [
-  '../msl/MSL_C/MSL_Common/Include',
-  '../msl/MSL_C/MSL_ARM/Include',
-  '../msl/MSL_C++/MSL_Common/Include',
-  '../msl/MSL_C++/MSL_ARM/Include',
   '(Runtime_Common)',
   '(Runtime_Common)/MWRuntime',
   '(Runtime_Common)/cxxabi',
@@ -61,10 +62,15 @@ include_dirs = [
   '../../NitroSDK/include'
 ]
 
+args_ver = ['-DNO_RUNTIME_BASIC_TYPEINFO']
+if libver == 'dsi/1.2'
+  args_ver = []
+endif
+
 args = [
   args_base,
   '-Cpp_exceptions', 'on',
-  '-DNO_RUNTIME_BASIC_TYPEINFO'
+  args_ver
 ]
 
 NITRO_Runtime_libs = []
@@ -77,6 +83,7 @@ foreach var_suff, var_args : lib_variants
   lib_in = static_library('NITRO_Runtime_' + var_suff, var_sources,
     c_args: [args, var_args],
     cpp_args: [args, var_args],
+    dependencies: dependencies,
     include_directories: include_dirs,
     build_by_default: false,
     pic: false,

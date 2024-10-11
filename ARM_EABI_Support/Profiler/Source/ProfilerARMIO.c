@@ -45,7 +45,11 @@ OSErr ProfilerDump(char *filename)
 {
 	ProfilerGlobalsPtr globals = GetGlobalsAddress();
 	OSErr		err = noErr;
+#ifdef LIBVER_dsi_1_2
+	short		refNum = 0;
+#else
 	short		refNum;
+#endif
 	long 		count = 2;
 	Boolean		saveProfilerStatus = globals->profilerStatus;
 	long		diskOffset;

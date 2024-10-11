@@ -1,7 +1,7 @@
 install_sub = install_base / 'Mathlib'
 
 libdir = 'lib'
-if libver == 'dsi/1.3'
+if libver == 'dsi/1.3' or libver == 'dsi/1.2'
   libdir = 'lib_dsi_1.3'
 endif
 

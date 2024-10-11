@@ -13,6 +13,8 @@ install_base = get_option('libdir') / 'metroskrew/sdk/' + libver
 mwccarm_ver = '4.0-1051'
 if libver == 'dsi/1.3'
   mwccarm_ver = '4.0-1034'
+elif libver == 'dsi/1.2'
+  mwccarm_ver = '4.0-1026'
 endif
 
 args_base = [
@@ -21,7 +23,8 @@ args_base = [
   '-opt', 'level=4,speed',
   '-ipa', 'file',
   '-Cpp_exceptions', 'off',
-  '-I-'
+  '-I-',
+  '-DLIBVER_' + libver.replace('/', '_').replace('.', '_')
 ]
 
 args_a_le = [
