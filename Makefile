@@ -1,5 +1,12 @@
 MESON ?= meson
 
+ifndef STRIP
+STRIP := $(shell command -v arm-none-eabi-strip 2> /dev/null)
+endif
+ifndef STRIP
+STRIP := $(shell command -v strip 2> /dev/null)
+endif
+
 CROSS := meson/mwccarm.ini
 
 build := build
@@ -20,6 +27,7 @@ check-$$(ver):
 	cat sums/$1/lib.sum | grep -v 'ProfileLibrary' | ( \
 		cd $(build)/install/lib/metroskrew/sdk/$1 && \
 		sha1sum --quiet -c - )
+	$(STRIP) -vgD -R .comment $(build)/install/lib/metroskrew/sdk/$1/Profiler/Lib/*.a
 	cat sums/$1/profiler.sum | ( \
 		cd $(build)/install/lib/metroskrew/sdk/$1 && \
 		sha1sum --quiet -c - )
