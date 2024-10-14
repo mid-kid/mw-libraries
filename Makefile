@@ -9,29 +9,26 @@ libver_all := dsi/1.6sp1 dsi/1.3 dsi/1.2
 
 build_ver := $(build)/$(subst /,_,$(libver))
 
-.PHONY: checkall
-checkall:
+.PHONY: check
+check:
 define defver
 ver := $$(subst /,_,$1)
-checkall: lib-$$(ver)
-.PHONY: lib-$$(ver)
-lib-$$(ver):
-	$(MAKE) libver=$1 check
+check: check-$$(ver)
+.PHONY: check-$$(ver)
+check-$$(ver):
+	$(MAKE) libver=$1 package
+	cat sums/$1/lib.sum | grep -v 'ProfileLibrary' | ( \
+		cd $(build)/install/lib/metroskrew/sdk/$1 && \
+		sha1sum --quiet -c - )
+	cat sums/$1/profiler.sum | ( \
+		cd $(build)/install/lib/metroskrew/sdk/$1 && \
+		sha1sum --quiet -c - )
 endef
 $(foreach v,$(libver_all),$(eval $(call defver,$(v))))
 
 .PHONY: all
 all: $(build_ver)/build.ninja
 	$(MESON) compile -C $(build_ver)
-
-.PHONY: check
-check: package
-	cat sums/$(libver)/lib.sum | grep -v 'ProfileLibrary' | ( \
-		cd $(build)/install/lib/metroskrew/sdk/$(libver) && \
-		sha1sum --quiet -c - )
-	cat sums/$(libver)/profiler.sum | ( \
-		cd $(build)/install/lib/metroskrew/sdk/$(libver) && \
-		sha1sum --quiet -c - )
 
 .PHONY: package
 package: $(build_ver)/build.ninja
