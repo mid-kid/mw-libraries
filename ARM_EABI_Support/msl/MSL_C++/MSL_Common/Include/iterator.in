@@ -2,18 +2,15 @@
  * Copyright © 1995-2007 Freescale Corporation.  All rights reserved.
  *
 ifelse(
-LIBVER, `dsi/1.3', `dnl
- * $Date: 2007/11/26 21:34:59 $
- * $Revision: 1.62.2.1 $
-define(`CONST_REFERENCE', `const_reference')dnl
-', LIBVER, `dsi/1.2', `dnl
- * $Date: 2007/11/26 21:34:59 $
- * $Revision: 1.62.2.1 $
-define(`CONST_REFERENCE', `const_reference')dnl
-', `dnl
+eval(LIBVER >= LIBVER_dsi_1_6sp1), 1, `dnl
  * $Date: 2010/07/20 05:08:23 $
  * $Revision: 1.62.2.2 $
 define(`CONST_REFERENCE', `typename Container::const_reference')dnl
+',
+`dnl
+ * $Date: 2007/11/26 21:34:59 $
+ * $Revision: 1.62.2.1 $
+define(`CONST_REFERENCE', `const_reference')dnl
 ')dnl
  */
 

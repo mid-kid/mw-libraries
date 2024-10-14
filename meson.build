@@ -1,20 +1,55 @@
 project('mw-libraries', ['c', 'cpp'],
   meson_version: '>=1.2.0')
 
-libver = get_option('libver')
-
 m4 = find_program('m4')
-m4_cmd = [m4, '-DLIBVER=' + libver, '@INPUT@']
 
 fixar = executable('fixar', 'fixar.c', c_args: ['-Wall', '-Wextra'], native: true)
 
-install_base = get_option('libdir') / 'metroskrew/sdk/' + libver
+libver = 17
+libvers = {
+  'dsi/1.6sp1': 17,
+  'dsi/1.3': 16,
+  'dsi/1.2': 15,
+  'dsi/1.1p1': 14,
+  'dsi/1.1': 13,
+  'ds/2.0/sp2p3': 12,
+  'ds/2.0/sp2': 11,
+  'ds/2.0/sp1p5': 10,
+  'ds/2.0/sp1p2': 9,
+  'ds/2.0/sp1': 8,
+  'ds/2.0/p4': 7,
+  'ds/2.0/p2': 6,
+  'ds/2.0/base': 5,
+  'ds/1.2/sp4': 4,
+  'ds/1.2/sp3': 3,
+  'ds/1.2/sp2': 2,
+  'ds/1.2/base_b73': 1,
+  'ds/1.2/base': 0
+}
+libver_dir = get_option('libver')
+if libver_dir in libvers
+  libver = libvers[libver_dir]
+endif
 
-mwccarm_ver = '4.0-1051'
-if libver == 'dsi/1.3'
+libver_defs = ['-DLIBVER=' + libver.to_string()]
+foreach name, vers : libvers
+  libver_defs += [
+    '-DLIBVER_' + name.replace('/', '_').replace('.', '_') +
+    '=' + vers.to_string()]
+endforeach
+
+install_base = get_option('libdir') / 'metroskrew/sdk/' + libver_dir
+
+m4_cmd = [m4, libver_defs, '@INPUT@']
+
+if libver >= libvers['dsi/1.6sp1']
+  mwccarm_ver = '4.0-1051'
+elif libver >= libvers['dsi/1.3']
   mwccarm_ver = '4.0-1034'
-elif libver == 'dsi/1.2'
+elif libver >= libvers['dsi/1.2']
   mwccarm_ver = '4.0-1026'
+elif libver >= libvers['dsi/1.1p1']
+  mwccarm_ver = '4.0-1024'
 endif
 
 args_base = [
@@ -24,7 +59,7 @@ args_base = [
   '-ipa', 'file',
   '-Cpp_exceptions', 'off',
   '-I-',
-  '-DLIBVER_' + libver.replace('/', '_').replace('.', '_')
+  libver_defs
 ]
 
 args_a_le = [

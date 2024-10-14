@@ -2,14 +2,15 @@
  * Copyright © 1995-2007 Freescale Corporation.  All rights reserved.
  *
 ifelse(
-LIBVER, `dsi/1.2', `dnl
- * $Date: 2007/01/29 18:12:25 $
- * $Revision: 1.35 $
-define(`LFEOF', `dnl')dnl
-', `dnl
+eval(LIBVER >= LIBVER_dsi_1_3), 1, `dnl
  * $Date: 2010/02/05 15:43:45 $
  * $Revision: 1.35.4.1 $
 define(`LFEOF', `')dnl
+',
+`dnl
+ * $Date: 2007/01/29 18:12:25 $
+ * $Revision: 1.35 $
+define(`LFEOF', `dnl')dnl
 ')dnl
  */
 
@@ -48,11 +49,10 @@ define(`LFEOF', `')dnl
 	using std::strstr;
 	using std::strtok;
 	using std::strxfrm;
-ifelse(
-LIBVER, `dsi/1.2', `dnl
-#if __STDC_WANT_LIB_EXT1__
-', `dnl
+ifelse(eval(LIBVER >= LIBVER_dsi_1_3), 1, `dnl
 #if defined(__STDC_WANT_LIB_EXT1__) && __STDC_WANT_LIB_EXT1__
+', `dnl
+#if __STDC_WANT_LIB_EXT1__
 ')dnl
 	using std::errno_t;
 	using std::rsize_t;

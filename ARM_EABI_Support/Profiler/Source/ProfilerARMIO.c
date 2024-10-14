@@ -45,10 +45,10 @@ OSErr ProfilerDump(char *filename)
 {
 	ProfilerGlobalsPtr globals = GetGlobalsAddress();
 	OSErr		err = noErr;
-#ifdef LIBVER_dsi_1_2
-	short		refNum = 0;
-#else
+#if LIBVER >= LIBVER_dsi_1_3
 	short		refNum;
+#else
+	short		refNum = 0;
 #endif
 	long 		count = 2;
 	Boolean		saveProfilerStatus = globals->profilerStatus;

@@ -63,7 +63,7 @@ include_dirs = [
 ]
 
 args_ver = ['-DNO_RUNTIME_BASIC_TYPEINFO']
-if libver == 'dsi/1.2'
+if libver <= libvers['dsi/1.2']
   args_ver = []
 endif
 

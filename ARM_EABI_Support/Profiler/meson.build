@@ -21,7 +21,7 @@ include_dirs = [
 
 wrap_ver = '4.0-1034'
 wrap_hack01 = '0004'
-if libver == 'dsi/1.2'
+if libver <= libvers['dsi/1.2']
   wrap_ver = '4.0-1018'
   wrap_hack01 = '0'
 endif
