@@ -1,7 +1,8 @@
 install_hdr = install_sub / 'MSL_Common/Include'
 
 headers = {
-  'string.h.in': 'string.h'
+  'string.h.in': 'string.h',
+  'cstdlib.in': 'cstdlib'
 }
 
 foreach src, out : headers

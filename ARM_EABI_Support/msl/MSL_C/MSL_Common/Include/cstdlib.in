@@ -1,8 +1,15 @@
 /* MSL
  * Copyright © 1995-2007 Freescale Corporation.  All rights reserved.
  *
+ifelse(
+eval(LIBVER >= LIBVER_dsi_1_1p1), 1, `dnl
  * $Date: 2008/11/18 18:26:25 $
  * $Revision: 1.86.2.1 $
+',
+`dnl
+ * $Date: 2007/11/01 19:42:48 $
+ * $Revision: 1.86 $
+')dnl
  */
 
 #ifndef _MSL_CSTDLIB
@@ -75,7 +82,11 @@ _MSL_BEGIN_EXTERN_C
 	_MSL_IMP_EXP_C void _MSL_CDECL					strict_handler_s(const char * _MSL_RESTRICT, void * _MSL_RESTRICT, errno_t) _MSL_CANT_THROW;
 #endif /* __STDC_WANT_LIB_EXT1__ */
 
+ifelse(eval(LIBVER >= LIBVER_dsi_1_1p1), 1, `dnl
 #if _MSL_FLOATING_POINT   || _MSL_HIWARE_COMP
+', `dnl
+#if _MSL_FLOATING_POINT
+')dnl
 	_MSL_IMP_EXP_C double _MSL_CDECL				atof(const char *) _MSL_CANT_THROW;
 	_MSL_IMP_EXP_C double _MSL_CDECL				strtod(const char * _MSL_RESTRICT, char ** _MSL_RESTRICT) _MSL_CANT_THROW;
 	_MSL_IMP_EXP_C long double _MSL_CDECL			strtold(const char * _MSL_RESTRICT, char ** _MSL_RESTRICT) _MSL_CANT_THROW;					/*- mm 990930 -*/
@@ -333,4 +344,4 @@ _MSL_END_NAMESPACE_STD
  * ejs 040422 Add extern "C++" for inline overloads
  * JWW 050128 When using MSL C++ on top of a third party C (non-MSL), put C items into std namespace
  * cc  070125 Added _MSL_HIWARE_COMP for smaller lib
- */
+ */dnl

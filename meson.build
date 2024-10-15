@@ -50,6 +50,8 @@ elif libver >= libvers['dsi/1.2']
   mwccarm_ver = '4.0-1026'
 elif libver >= libvers['dsi/1.1p1']
   mwccarm_ver = '4.0-1024'
+elif libver >= libvers['dsi/1.1']
+  mwccarm_ver = '4.0-1018'
 endif
 
 args_base = [
@@ -72,7 +74,7 @@ args_ai_le = [
 args_t_le = [
   '-proc', 'arm946e',
   '-thumb',
-  '-interworking'
+  libver >= libvers['dsi/1.1p1'] ? '-interworking' : []
 ]
 args_pic_pid = [
   '-pic',
