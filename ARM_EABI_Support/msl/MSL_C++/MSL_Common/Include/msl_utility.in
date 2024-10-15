@@ -1,8 +1,15 @@
 /* MSL
  * Copyright © 1995-2007 Freescale Corporation.  All rights reserved.
  *
+ifelse(
+eval(LIBVER >= LIBVER_dsi_1_2), 1, `dnl
  * $Date: 2009/08/26 19:43:44 $
  * $Revision: 1.64.4.1 $
+',
+`dnl
+ * $Date: 2007/01/29 18:21:01 $
+ * $Revision: 1.64 $
+')dnl
  */
 
 // msl_utility
@@ -783,11 +790,15 @@ namespace details
 	template <class T>
 	struct class_has_trivial_default_ctor
 	{
+ifelse(eval(LIBVER >= LIBVER_dsi_1_2), 1, `dnl
 	#if __MWERKS__ >= 0x3100
 		static const bool value = __builtin_trivial_members(T) & 0x8;
 	#else
 		static const bool value = false; // hook
 	#endif 	
+', `dnl
+		static const bool value = false;  // hook
+')dnl
 	};
 
 	template <class T>

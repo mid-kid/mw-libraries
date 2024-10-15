@@ -133,7 +133,6 @@ install_headers(
   'MSL_Common/Include/msl_smart_pointers',
   'MSL_Common/Include/msl_thread',
   'MSL_Common/Include/msl_time',
-  'MSL_Common/Include/msl_utility',
   'MSL_Common/Include/mslconfig',
   'MSL_Common/Include/mslconfig_gcc',
   'MSL_Common/Include/new',

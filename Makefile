@@ -12,7 +12,7 @@ CROSS := meson/mwccarm.ini
 build := build
 
 libver := dsi/1.6sp1
-libver_all := dsi/1.6sp1 dsi/1.3 dsi/1.2
+libver_all := dsi/1.6sp1 dsi/1.3 dsi/1.2 dsi/1.1p1
 
 build_ver := $(build)/$(subst /,_,$(libver))
 

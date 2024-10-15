@@ -528,18 +528,31 @@ static int __sformatter(int (_MSL_CDECL *ReadProc)(void *, int, int), void * Rea
 {
 	int					num_chars, chars_read, items_assigned, conversions;
 	int					base, negative, overflow;
+#if LIBVER >= LIBVER_dsi_1_2
 	int 				rval = 0;
+#else
+	int 				rval;
+#endif
 	const char *		format_ptr;
 	char				format_char; 
 	char             	c;
 	scan_format			format;
+#if LIBVER >= LIBVER_dsi_1_2
 	long				long_num = 0;
 	unsigned long		u_long_num = 0;
+#else
+	long				long_num;
+	unsigned long		u_long_num;
+#endif
 
 #if _MSL_C99_PRINTF_SCANF
 #if _MSL_LONGLONG
 	long long   		long_long_num = 0;
+#if LIBVER >= LIBVER_dsi_1_2
 	unsigned long long 	u_long_long_num = 0;
+#else
+	unsigned long long 	u_long_long_num;
+#endif
 #endif /* _MSL_LONGLONG */
 #if _MSL_FLOATING_POINT
 #if _MSL_FLOATING_POINT_IO
@@ -549,8 +562,13 @@ static int __sformatter(int (_MSL_CDECL *ReadProc)(void *, int, int), void * Rea
 #endif /* _MSL_C99_PRINTF_SCANF */
 
 	char *				arg_ptr;
+#if LIBVER >= LIBVER_dsi_1_2
 	int					elem_valid = 0;
 	size_t				elem_maxsize = 0;
+#else
+	int					elem_valid;
+	size_t				elem_maxsize;
+#endif
 	int match_failure = 0;
 	int terminate  = 0;			/*- mm 990608 -*/
 	
@@ -610,6 +628,7 @@ static int __sformatter(int (_MSL_CDECL *ReadProc)(void *, int, int), void * Rea
 				while (isspace(c = (*ReadProc)(ReadProcArg, 0, __GetAChar)))			/*- mm 990325 -*/
 					++chars_read;
 				
+#if LIBVER >= LIBVER_dsi_1_2
 				if (c == EOF)
 				{
 					if (!is_secure)
@@ -617,6 +636,7 @@ static int __sformatter(int (_MSL_CDECL *ReadProc)(void *, int, int), void * Rea
 					else
 						match_failure = 1;
 				}
+#endif
 				
 				(*ReadProc)(ReadProcArg, c, __UngetAChar);								/*- mm 990325 -*/
 			}
@@ -1816,12 +1836,27 @@ int _MSL_CDECL vfscanf_s(FILE * _MSL_RESTRICT file, const char * _MSL_RESTRICT f
 }
 #endif /* !defined(_Old_DSP_IO_Interface) */
 
+#if LIBVER < LIBVER_dsi_1_2
+int _MSL_CDECL isspace_string(const char *s)
+{
+	int i = 0;
+
+    while(s[i] != '\0')
+
+       if(!isspace(s[i++]))
+       return 0x0;
+
+    return 0x1;
+}
+#else
+#define isspace_string(x) 0
+#endif
 
 int _MSL_CDECL vsscanf(const char * _MSL_RESTRICT s, const char * _MSL_RESTRICT format, va_list arg)		/*- mm 990828 -*/
 {
 	__InStrCtrl isc;
 	isc.NextChar         = (char *)s;
-	if ((s == NULL) || (*isc.NextChar == '\0'))
+	if ((s == NULL) || (*isc.NextChar == '\0') || isspace_string(s))
 		return(EOF);												/*- mm 990617 -*/
 	isc.NullCharDetected = 0;
 	

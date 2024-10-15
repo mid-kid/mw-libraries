@@ -83,11 +83,15 @@ enum argument_options
 
 static wchar_t skip[]=L" \t-\r";
 
+#if LIBVER >= LIBVER_dsi_1_2
 typedef struct {
 	const wchar_t   *start;
 	const wchar_t   *stop;
 	char            invert;
 	} char_map;
+#else
+typedef unsigned char char_map[8192];						/*- mm 990914 -*/
+#endif
 
 typedef struct
 {
@@ -99,6 +103,7 @@ typedef struct
 	char_map		char_set;
 } scan_format;
 
+#if LIBVER >= LIBVER_dsi_1_2
 static int tst_char_map(const char_map *cm, wchar_t c)
 {
 int     found = 0;
@@ -126,11 +131,17 @@ const wchar_t *str = cm->start;
 
 	return !cm->invert?found:!found;
 }
+#define set_char_map(map, ch)
+#else
+#define set_char_map(map, ch)	 (*map)[ch>>3] |= (1 << (ch&7))
+#define tst_char_map(map, ch) 	((*map)[ch>>3] &  (1 << (ch&7)))
+#endif
 
 static const wchar_t * parse_format(const wchar_t * format_string, scan_format * format)
 {
 	const wchar_t *	s = format_string;
 	wchar_t			c;
+#if LIBVER >= LIBVER_dsi_1_2
 	int				flag_found;
 	scan_format		f;
 
@@ -140,6 +151,18 @@ static const wchar_t * parse_format(const wchar_t * format_string, scan_format *
 	f.conversion_char 		 = 0;
 	f.field_width 			 = INT_MAX;
 	memset(&f.char_set, 0, sizeof(char_map));
+#else
+	int				flag_found, invert;
+	/*scan_format		f = {0, 0, normal_argument, 0, INT_MAX, {0}};*/					/*- mm 000419 -*/
+	/* The following performs the above initialization without a large static area */	/*- mm 000419 -*/
+	scan_format		f;																	/*- mm 000419 -*/
+	f.suppress_assignment	 = 0;														/*- mm 000419 -*/
+	f.field_width_specified	 = 0;														/*- mm 000419 -*/
+	f.argument_options		 = normal_argument;											/*- mm 000419 -*/
+	f.conversion_char 		 = 0;														/*- mm 000419 -*/
+	f.field_width 			 = INT_MAX;													/*- mm 000419 -*/
+	memset(&f.char_set, 0, sizeof(char_map));											/*- mm 000419 -*/
+#endif
 
 	if ((c = *++s) == L'%')
 	{
@@ -316,9 +339,22 @@ static const wchar_t * parse_format(const wchar_t * format_string, scan_format *
 				if (f.argument_options != normal_argument)
 					f.conversion_char = bad_conversion;
 			
+#if LIBVER >= LIBVER_dsi_1_2
 			f.char_set.invert = 1;
 			f.char_set.start = skip;
 			f.char_set.stop = skip+sizeof(skip);
+#else
+			{
+				int		i;
+				unsigned char *	p;
+				
+				for (i = sizeof(f.char_set), p = f.char_set; i; --i)
+					*p++ = 0xFF;
+				
+				f.char_set[1] = 0xC1;	/* sets bits for HT, LF, VT, FF, and CR chars to zero */
+				f.char_set[4] = 0xFE;	/* set bit for Sp char to zero */
+			}
+#endif
 			break;
 			
 		case L'n':
@@ -334,18 +370,29 @@ static const wchar_t * parse_format(const wchar_t * format_string, scan_format *
 			
 			c = *++s;
 			
+#if LIBVER >= LIBVER_dsi_1_2
 			f.char_set.invert = 0;
+#else
+			invert = 0;
+#endif
 			
 			if (c == L'^')
 			{
+#if LIBVER >= LIBVER_dsi_1_2
 				f.char_set.invert = 1;
+#else
+				invert = 1;
+#endif
 				c = *++s;
 			}
 
+#if LIBVER >= LIBVER_dsi_1_2
 			f.char_set.start = s;
+#endif
 			
 			if (c == L']')
 			{
+				set_char_map(&f.char_set, L']');
 				c = *++s;
 			}
 			
@@ -353,9 +400,17 @@ static const wchar_t * parse_format(const wchar_t * format_string, scan_format *
 			{
 				int d;
 				
+				set_char_map(&f.char_set, c);
+				
 				if (*(s+1) == L'-' && (d = *(s+2)) != 0 && d != L']')
 				{
+#if LIBVER >= LIBVER_dsi_1_2
 					while (c++ <= d) /**/;
+#else
+					while (++c <= d)
+						set_char_map(&f.char_set, c);
+#endif
+
 					c = *(s += 3);
 				}
 				else
@@ -364,13 +419,27 @@ static const wchar_t * parse_format(const wchar_t * format_string, scan_format *
 			}
 			}
 
+#if LIBVER >= LIBVER_dsi_1_2
 			f.char_set.stop = s;
+#endif
 			
 			if (!c)
 			{
 				f.conversion_char = bad_conversion;
 				break;
 			}
+			
+#if LIBVER < LIBVER_dsi_1_2
+			if (invert)
+			{
+				int							i;
+				unsigned char *	p;															/*- mm 990408 -*/
+				
+				for (i = sizeof(f.char_set), p = (unsigned char*)f.char_set; i; --i, ++p)	/*- mm 990408 -*/
+					*p = ~*p;
+			}
+#endif
+			
 			break;
 		
 		default:
@@ -392,7 +461,11 @@ static int __wsformatter(wint_t (*wReadProc)(void *, wint_t, int), void * wReadP
 	int					base, negative, overflow;
 	const wchar_t *		format_ptr;
 	wchar_t				format_char;
+#if LIBVER >= LIBVER_dsi_1_2
 	wchar_t             c = 0;
+#else
+	wchar_t             c;
+#endif
 	scan_format			format;
 	long				long_num;
 	unsigned long		u_long_num;
@@ -408,8 +481,13 @@ static int __wsformatter(wint_t (*wReadProc)(void *, wint_t, int), void * wReadP
 #endif
 
 	wchar_t *			arg_ptr;
+#if LIBVER >= LIBVER_dsi_1_2
 	int					elem_valid = 0;
 	size_t				elem_maxsize = 0;
+#else
+	int					elem_valid;
+	size_t				elem_maxsize;
+#endif
 	int match_failure = 0;
 	int terminate  = 0;
 	

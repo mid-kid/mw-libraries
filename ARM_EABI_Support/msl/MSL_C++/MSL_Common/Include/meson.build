@@ -1,7 +1,8 @@
 install_hdr = install_sub / 'MSL_Common/Include'
 
 headers = {
-  'iterator.in': 'iterator'
+  'iterator.in': 'iterator',
+  'msl_utility.in': 'msl_utility'
 }
 
 foreach src, out : headers
