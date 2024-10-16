@@ -20,9 +20,9 @@ build_ver := $(build)/$(subst /,_,$(libver))
 check:
 define defver
 ver := $$(subst /,_,$1)
-check: check-$(ver)
-.PHONY: check-$(ver)
-check-$(ver):
+check: check-$$(ver)
+.PHONY: check-$$(ver)
+check-$$(ver):
 	$(MAKE) libver=$1 package
 	cat sums/$1/strip.sum | sed 's/^[^ ]* \*\?//' > $(build)/$(ver).strip
 	cat $(build)/$(ver).strip | \
