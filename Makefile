@@ -20,15 +20,19 @@ build_ver := $(build)/$(subst /,_,$(libver))
 check:
 define defver
 ver := $$(subst /,_,$1)
-check: check-$$(ver)
-.PHONY: check-$$(ver)
-check-$$(ver):
+check: check-$(ver)
+.PHONY: check-$(ver)
+check-$(ver):
 	$(MAKE) libver=$1 package
-	cat sums/$1/lib.sum | grep -v 'ProfileLibrary' | ( \
+	cat sums/$1/strip.sum | sed 's/^[^ ]* \*\?//' > $(build)/$(ver).strip
+	cat $(build)/$(ver).strip | \
+		sed 's/[^^]/[&]/g;s/\^/\\^/g;s/$$$$/$$$$/' | \
+		grep -vf - sums/$1/lib.sum > $(build)/$(ver).sum
+	cat sums/$1/strip.sum >> $(build)/$(ver).sum
+	cat $(build)/$(ver).strip | ( \
 		cd $(build)/install/lib/metroskrew/sdk/$1 && \
-		sha1sum --quiet -c - )
-	$(STRIP) -vgD -R .comment $(build)/install/lib/metroskrew/sdk/$1/Profiler/Lib/*.a
-	cat sums/$1/profiler.sum | ( \
+		xargs -r $(STRIP) -vgD -R .comment )
+	cat $(build)/$(ver).sum | ( \
 		cd $(build)/install/lib/metroskrew/sdk/$1 && \
 		sha1sum --quiet -c - )
 endef
