@@ -21,8 +21,7 @@ MSL_CPP_NITRO_dep = declare_dependency(
   include_directories: [
     'MSL_Common/Include',
     'MSL_ARM/Include'
-  ]
-)
+  ])
 
 dependencies = [
   MSL_C_NITRO_dep,

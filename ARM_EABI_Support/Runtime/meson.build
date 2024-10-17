@@ -50,7 +50,8 @@ sources_t = [
 
 dependencies = [
   MSL_C_NITRO_dep,
-  MSL_CPP_NITRO_dep
+  MSL_CPP_NITRO_dep,
+  NITROSDK_dep
 ]
 
 include_dirs = [
@@ -58,8 +59,7 @@ include_dirs = [
   '(Runtime_Common)/MWRuntime',
   '(Runtime_Common)/cxxabi',
   '(RISC_Common)',
-  'Runtime_ARM/(Common_Source)',
-  '../../NitroSDK/include'
+  'Runtime_ARM/(Common_Source)'
 ]
 
 args_ver = ['-DNO_RUNTIME_BASIC_TYPEINFO']

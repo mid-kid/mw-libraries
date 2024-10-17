@@ -132,17 +132,16 @@ MSL_C_NITRO_dep = declare_dependency(
   include_directories: [
     'MSL_Common/Include',
     'MSL_ARM/Include'
-  ]
-)
+  ])
 
 dependencies = [
-  MSL_C_NITRO_dep
+  MSL_C_NITRO_dep,
+  NITROSDK_dep
 ]
 
 include_dirs = [
   'MSL_Common_Embedded/Math/Include',
-  '../MSL_Extras/MSL_Common/Include',
-  '../../../NitroSDK/include'
+  '../MSL_Extras/MSL_Common/Include'
 ]
 
 args = [
