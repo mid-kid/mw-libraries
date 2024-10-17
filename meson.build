@@ -54,6 +54,8 @@ elif libver >= libvers['dsi/1.1']
   mwccarm_ver = '4.0-1018'
 elif libver >= libvers['ds/2.0/sp2p3']
   mwccarm_ver = '3.0-138'
+elif libver >= libvers['ds/2.0/sp2']
+  mwccarm_ver = '3.0-136'
 endif
 
 args_base = [
