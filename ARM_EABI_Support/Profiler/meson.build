@@ -10,6 +10,20 @@ sources = [
   'Source/ProfilerARMIO.c'
 ]
 
+headers_gen = []
+headers_gen += custom_target(
+  input: 'include/Profiler.h',
+  output: 'Profiler.h',
+  command: ['sh', '-c',
+    libver >= libvers['dsi/1.1']
+    ? 'cat "$1" | sed "$(echo cy8NJC8vO3MvJC8NLw | base64 -d)" | head -c -1'
+    : 'cat "$1" | sed "$(echo cy8NJC8v | base64 -d)"',
+    '--', '@INPUT@'],
+  capture: true,
+  install: true,
+  install_dir: install_sub / 'include'
+)
+
 dependencies = [
   MSL_C_NITRO_dep,
   MSL_CPP_NITRO_dep
@@ -19,23 +33,29 @@ include_dirs = [
   'include'
 ]
 
-wrap_ver = '4.0-1034'
-wrap_hack01 = '0004'
-if libver <= libvers['dsi/1.2']
+if libver >= libvers['dsi/1.3']
+  wrap_ver = '4.0-1034'
+  wrap_hack01 = '0004'
+elif libver >= libvers['dsi/1.1']
   wrap_ver = '4.0-1018'
   wrap_hack01 = '0'
+else
+  wrap_ver = '3.0-114'
+  wrap_hack01 = '0014'
 endif
 
 args = [
-  args_base,
   '-wrap:ver', wrap_ver,
   '-wrap:hack01', wrap_hack01,
-  '-warnings', 'off',
   '-lang', 'c++',
-  '-ipa', 'off',
+  '-sym', 'off',
   '-opt', 'level=0,speed',
+  '-Cpp_exceptions', 'off',
+  '-warnings', 'off',
   '-char', 'signed',
-  '-DLITTLE_ENDIAN'
+  '-I-',
+  '-DLITTLE_ENDIAN',
+  libver_defs
 ]
 
 args_a_le = [
@@ -57,6 +77,7 @@ foreach var_suff, var_args : variants
   lib_in = static_library('ProfileLibrary_' + var_suff, var_sources,
     c_args: [args, var_args],
     cpp_args: [args, var_args],
+    sources: headers_gen,
     dependencies: dependencies,
     include_directories: include_dirs,
     build_by_default: false,
@@ -71,7 +92,3 @@ foreach var_suff, var_args : variants
     install: true,
     install_dir: install_sub / 'Lib')
 endforeach
-
-install_headers(
-  'include/Profiler.h',
-  install_dir: install_sub / 'include')

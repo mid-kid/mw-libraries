@@ -29,10 +29,7 @@ dependencies = [
   MSL_CPP_NITRO_dep
 ]
 
-include_dirs = [
-  '../MSL_C/MSL_Common/Include',
-  '../MSL_C/MSL_ARM/Include'
-]
+include_dirs = []
 
 args = [
   args_base,

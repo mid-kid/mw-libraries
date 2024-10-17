@@ -12,31 +12,32 @@ CROSS := meson/mwccarm.ini
 build := build
 
 libver := dsi/1.6sp1
-libver_all := dsi/1.6sp1 dsi/1.3 dsi/1.2 dsi/1.1p1 dsi/1.1
+libver_all := \
+	dsi/1.6sp1 dsi/1.3 dsi/1.2 dsi/1.1p1 dsi/1.1 \
+	ds/2.0/sp2p3
 
 build_ver := $(build)/$(subst /,_,$(libver))
 
 .PHONY: check
 check:
 define defver
-ver := $$(subst /,_,$1)
-check: check-$$(ver)
-.PHONY: check-$$(ver)
-check-$$(ver):
+check: check-$2
+.PHONY: check-$2
+check-$2:
 	$(MAKE) libver=$1 package
-	cat sums/$1/strip.sum | sed 's/^[^ ]* \*\?//' > $(build)/$(ver).strip
-	cat $(build)/$(ver).strip | \
+	cat sums/$1/strip.sum | sed 's/^[^ ]* \*\?//' > $(build)/$2.strip
+	cat $(build)/$2.strip | \
 		sed 's/[^^]/[&]/g;s/\^/\\^/g;s/$$$$/$$$$/' | \
-		grep -vf - sums/$1/lib.sum > $(build)/$(ver).sum
-	cat sums/$1/strip.sum >> $(build)/$(ver).sum
-	cat $(build)/$(ver).strip | ( \
+		grep -vf - sums/$1/lib.sum > $(build)/$2.sum
+	cat sums/$1/strip.sum >> $(build)/$2.sum
+	cat $(build)/$2.strip | ( \
 		cd $(build)/install/lib/metroskrew/sdk/$1 && \
 		xargs -r $(STRIP) -vgD -R .comment )
-	cat $(build)/$(ver).sum | ( \
+	cat $(build)/$2.sum | ( \
 		cd $(build)/install/lib/metroskrew/sdk/$1 && \
 		sha1sum --quiet -c - )
 endef
-$(foreach v,$(libver_all),$(eval $(call defver,$(v))))
+$(foreach v,$(libver_all),$(eval $(call defver,$v,$(subst /,_,$v))))
 
 .PHONY: all
 all: $(build_ver)/build.ninja

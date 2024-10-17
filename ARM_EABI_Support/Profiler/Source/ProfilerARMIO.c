@@ -45,7 +45,7 @@ OSErr ProfilerDump(char *filename)
 {
 	ProfilerGlobalsPtr globals = GetGlobalsAddress();
 	OSErr		err = noErr;
-#if LIBVER >= LIBVER_dsi_1_3
+#if LIBVER >= LIBVER_dsi_1_3 || LIBVER == LIBVER_ds_2_0_sp2p3
 	short		refNum;
 #else
 	short		refNum = 0;

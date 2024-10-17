@@ -52,6 +52,8 @@ elif libver >= libvers['dsi/1.1p1']
   mwccarm_ver = '4.0-1024'
 elif libver >= libvers['dsi/1.1']
   mwccarm_ver = '4.0-1018'
+elif libver >= libvers['ds/2.0/sp2p3']
+  mwccarm_ver = '3.0-138'
 endif
 
 args_base = [
@@ -60,6 +62,7 @@ args_base = [
   '-opt', 'level=4,speed',
   '-ipa', 'file',
   '-Cpp_exceptions', 'off',
+  '-iso_templates', 'on',
   '-I-',
   libver_defs
 ]
@@ -89,9 +92,17 @@ lib_variants = {
   'T_LE_PIC_PID': [args_t_le, args_pic_pid]
 }
 
-subdir('ARM_EABI_Support/msl/MSL_C')
-subdir('ARM_EABI_Support/msl/MSL_C++')
-subdir('ARM_EABI_Support/msl/MSL_Extras')
+if libver >= libvers['dsi/1.1']
+  subdir('ARM_EABI_Support/msl/MSL_C')
+  subdir('ARM_EABI_Support/msl/MSL_C++')
+  subdir('ARM_EABI_Support/msl/MSL_Extras')
+  subdir('ARM_EABI_Support/Runtime')
+else
+  subdir('ARM_EABI_Support_DS2.0SP2/msl/MSL_C')
+  subdir('ARM_EABI_Support_DS2.0SP2/msl/MSL_C++')
+  subdir('ARM_EABI_Support_DS2.0SP2/msl/MSL_Extras')
+  subdir('ARM_EABI_Support_DS2.0SP2/Runtime')
+endif
+
 subdir('ARM_EABI_Support/Mathlib')
-subdir('ARM_EABI_Support/Runtime')
 subdir('ARM_EABI_Support/Profiler')
