@@ -38,9 +38,18 @@ foreach name, vers : libvers
     '=' + vers.to_string()]
 endforeach
 
-install_base = get_option('libdir') / 'metroskrew/sdk/' + libver_dir
-
 m4_cmd = [m4, libver_defs, '@INPUT@']
+unix2dos_cmd = ['sh', '-c',
+  'sed "$(echo cy8NJC8vO3MvJC8NLw | base64 -d)" < "$1" > "$2"; '
+  + 'if [ -n "$(tail -c -1 "$1")" ]; then '
+  + 'sed -e "$(echo JHMvDSQvLw | base64 -d)" -i "$2"; '
+  + 'fi',
+  '--', '@INPUT@', '@OUTPUT@']
+dos2unix_cmd = ['sh', '-c',
+  'sed "$(echo cy8NJC8v | base64 -d)" < "$1" > "$2"',
+  '--', '@INPUT@', '@OUTPUT@']
+
+install_base = get_option('libdir') / 'metroskrew/sdk/' + libver_dir
 
 if libver >= libvers['dsi/1.6sp1']
   mwccarm_ver = '4.0-1051'
@@ -56,6 +65,17 @@ elif libver >= libvers['ds/2.0/sp2p3']
   mwccarm_ver = '3.0-138'
 elif libver >= libvers['ds/2.0/sp2']
   mwccarm_ver = '3.0-136'
+elif libver >= libvers['ds/2.0/sp1p5']
+  #mwccarm_ver = '3.0-127'  # Missing compiler
+  #mwccarm_ver = '3.0-126'  # Close match but not complete
+elif libver >= libvers['ds/2.0/sp1p2']
+  mwccarm_ver = '3.0-126'
+endif
+
+if libver >= libvers['ds/2.0/sp1p5']
+  hdrconv_cmd = unix2dos_cmd
+else
+  hdrconv_cmd = dos2unix_cmd
 endif
 
 args_base = [

@@ -10,20 +10,6 @@ sources = [
   'Source/ProfilerARMIO.c'
 ]
 
-headers_gen = []
-headers_gen += custom_target(
-  input: 'include/Profiler.h',
-  output: 'Profiler.h',
-  command: ['sh', '-c',
-    libver >= libvers['dsi/1.1']
-    ? 'cat "$1" | sed "$(echo cy8NJC8vO3MvJC8NLw | base64 -d)" | head -c -1'
-    : 'cat "$1" | sed "$(echo cy8NJC8v | base64 -d)"',
-    '--', '@INPUT@'],
-  capture: true,
-  install: true,
-  install_dir: install_sub / 'include'
-)
-
 dependencies = [
   MSL_C_NITRO_dep,
   MSL_CPP_NITRO_dep
@@ -77,9 +63,9 @@ foreach var_suff, var_args : variants
   lib_in = static_library('ProfileLibrary_' + var_suff, var_sources,
     c_args: [args, var_args],
     cpp_args: [args, var_args],
-    sources: headers_gen,
     dependencies: dependencies,
     include_directories: include_dirs,
+    implicit_include_directories: false,
     build_by_default: false,
     pic: false,
     name_prefix: '',
@@ -91,4 +77,23 @@ foreach var_suff, var_args : variants
     command: [fixar, '@OUTPUT@', '@INPUT@', var_sources],
     install: true,
     install_dir: install_sub / 'Lib')
+endforeach
+
+headers = [
+  ['include', 'Profiler.h'],
+]
+
+if libver >= libvers['dsi/1.1']
+  cmd = unix2dos_cmd
+else
+  cmd = dos2unix_cmd
+endif
+
+foreach hdr : headers
+  custom_target(
+    input: hdr[0] / hdr[1],
+    output: '@PLAINNAME@',
+    command: cmd,
+    install: true,
+    install_dir: install_sub / hdr[0])
 endforeach

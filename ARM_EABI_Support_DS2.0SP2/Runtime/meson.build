@@ -60,10 +60,7 @@ include_dirs = [
   'Runtime_ARM/(Common_Source)'
 ]
 
-args_ver = ['-DNO_RUNTIME_BASIC_TYPEINFO']
-if libver <= libvers['dsi/1.2']
-  args_ver = []
-endif
+args_ver = []
 
 args = [
   args_base,
@@ -83,6 +80,7 @@ foreach var_suff, var_args : lib_variants
     cpp_args: [args, var_args],
     dependencies: dependencies,
     include_directories: include_dirs,
+    implicit_include_directories: false,
     build_by_default: false,
     pic: false,
     name_prefix: '',
@@ -96,6 +94,15 @@ foreach var_suff, var_args : lib_variants
     install_dir: install_sub / 'Runtime_ARM/Runtime_NITRO/Lib')
 endforeach
 
-install_headers(
-  'Runtime_ARM/Runtime_NITRO/Common_Includes/alloca.h',
-  install_dir: install_sub / 'Runtime_ARM/Runtime_NITRO/Common_Includes')
+headers = [
+  ['Runtime_ARM/Runtime_NITRO/Common_Includes', 'alloca.h'],
+]
+
+foreach hdr : headers
+  custom_target(
+    input: hdr[0] / hdr[1],
+    output: '@PLAINNAME@',
+    command: hdrconv_cmd,
+    install: true,
+    install_dir: install_sub / hdr[0])
+endforeach

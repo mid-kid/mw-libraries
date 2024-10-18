@@ -57,7 +57,15 @@ asm void longjmp(register jmp_buf env, register int val)
 {
 		ldmia	a1,{v1-v8,sp,lr}
 		movs	a1,a2
+#if LIBVER != LIBVER_ds_2_0_sp1p5
 		moveq	a1,#1
+#else
+		beq longjmp_true
+		b longjmp_false
+longjmp_true:
+		mov	a1,#1
+longjmp_false:
+#endif
 		bx		lr
 }
 

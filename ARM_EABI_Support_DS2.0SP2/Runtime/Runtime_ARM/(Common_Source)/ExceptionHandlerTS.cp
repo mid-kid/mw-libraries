@@ -233,7 +233,11 @@ asm void __TransferControl(register ThrowContext *context, register ExceptionInf
 		sub		sp,sp,ip
 
 		//	transfer control to the catch-block
+#if LIBVER >= LIBVER_ds_2_0_sp2
 		bx		address
+#else
+		mov		pc,address
+#endif
 
 #else // Thumb version
 
@@ -266,7 +270,11 @@ asm void __TransferControl(register ThrowContext *context, register ExceptionInf
 		add		sp,a4
 
 		//	transfer control to the catch-block
+#if LIBVER >= LIBVER_ds_2_0_sp2
 		bx		address
+#else
+		mov		pc,address
+#endif
 
 #endif
 }
