@@ -85,8 +85,10 @@ headers = [
 
 if libver >= libvers['dsi/1.1']
   cmd = unix2dos_cmd
-else
+elif libver >= libvers['ds/2.0/p4']
   cmd = dos2unix_cmd
+else
+  cmd = unix2dos_cmd
 endif
 
 foreach hdr : headers
