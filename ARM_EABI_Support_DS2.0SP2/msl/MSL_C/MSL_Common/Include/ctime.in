@@ -1,8 +1,17 @@
 /* MSL
  * Copyright © 1995-2006 Freescale Corporation.  All rights reserved.
  *
+ifelse(
+eval(LIBVER >= LIBVER_ds_2_0_p2), 1, `dnl
  * $Date: 2006/05/25 14:13:48 $
  * $Revision: 1.74.2.5 $
+define(`LFEOF', `')dnl
+',
+`dnl
+ * $Date: 2006/02/08 20:32:44 $
+ * $Revision: 1.74.2.3 $
+define(`LFEOF', `dnl')dnl
+')dnl
  */
 
 #ifndef _MSL_CTIME
@@ -177,4 +186,4 @@ _MSL_END_NAMESPACE_STD
  * cc  040928 Added _MSL_TM_STRUCT_AVAILABLE for platforms that are dependent on the struct but do 
  *            not need full time os support
  * JWW 050128 When using MSL C++ on top of a third party C (non-MSL), put C items into std namespace
- */
+ */LFEOF

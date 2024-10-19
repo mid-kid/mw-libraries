@@ -125,10 +125,24 @@ sources = [
   'MSL_ARM/Src/pool_alloc.NITRO.c'
 ]
 
-headers_gen = []
+headers_subdirs = [
+  'MSL_Common/Include',
+  'MSL_ARM/Include'
+]
+
+headers_gen_dep = []
+headers_gen_ins = []
+foreach dir : headers_subdirs
+  headers_gen = []
+  subdir(dir)
+  foreach header : headers_gen
+    headers_gen_dep += header
+    headers_gen_ins += [[dir, header]]
+  endforeach
+endforeach
 
 MSL_C_NITRO_dep = declare_dependency(
-  sources: headers_gen,
+  sources: headers_gen_dep,
   include_directories: [
     'MSL_Common/Include',
     'MSL_ARM/Include'
@@ -175,8 +189,6 @@ foreach var_suff, var_args : lib_variants
 endforeach
 
 headers = [
-  ['MSL_ARM/Include', 'PREFIX_NITRO.h'],
-  ['MSL_ARM/Include', 'ansi_prefix.ARM.h'],
   ['MSL_ARM/Include', 'ansi_prefix.ARM.size.h'],
   ['MSL_ARM/Include', 'critical_regions.NITRO.h'],
   ['MSL_ARM/Include', 'fenv.ARM.h'],
@@ -214,7 +226,6 @@ headers = [
   ['MSL_Common/Include', 'cstdio'],
   ['MSL_Common/Include', 'cstdlib'],
   ['MSL_Common/Include', 'cstring'],
-  ['MSL_Common/Include', 'ctime'],
   ['MSL_Common/Include', 'ctype.h'],
   ['MSL_Common/Include', 'ctype_api.h'],
   ['MSL_Common/Include', 'cwchar'],
@@ -306,6 +317,14 @@ headers = [
 foreach hdr : headers
   custom_target(
     input: hdr[0] / hdr[1],
+    output: '@PLAINNAME@',
+    command: hdrconv_cmd,
+    install: true,
+    install_dir: install_sub / hdr[0])
+endforeach
+foreach hdr : headers_gen_ins
+  custom_target(
+    input: hdr[1],
     output: '@PLAINNAME@',
     command: hdrconv_cmd,
     install: true,

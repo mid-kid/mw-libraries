@@ -1,8 +1,15 @@
 /* MSL
  * Copyright © 1995-2006 Freescale Corporation.  All rights reserved.
  *
+ifelse(
+eval(LIBVER >= LIBVER_ds_2_0_p2), 1, `dnl
  * $Date: 2006/05/25 14:15:08 $
  * $Revision: 1.21.2.3 $
+',
+`dnl
+ * $Date: 2006/02/09 16:59:53 $
+ * $Revision: 1.21.2.2 $
+')dnl
  */
 
 #ifndef __ansi_prefix__
@@ -165,6 +172,7 @@
 
 #define _MSL_INTEGRAL_MATH
 
+ifelse(eval(LIBVER >= LIBVER_ds_2_0_p2), 1, `dnl
 /* Special handling for MSL for NITRO since PREFIX_NITRO.h is not
 	assured to be included in NITRO projects */
 	
@@ -173,6 +181,7 @@
 	#define _MSL_OS_TIME_SUPPORT 0
 #endif
 
+')dnl
 #endif /*	__ansi_prefix__	  */
 
 /*#pragma once on*/
@@ -187,5 +196,7 @@
  * cc  040204 The _No_Time_OS_Support flag has been deprecated and replaced with _MSL_OS_TIME_SUPPORT
  * cc  040217 Changed _No_Disk_File_OS_Support to _MSL_OS_DISK_FILE_SUPPORT
  * JWW 040401 Changed _No_Alloc_OS_Support to _MSL_OS_ALLOC_SUPPORT
+ifelse(eval(LIBVER >= LIBVER_ds_2_0_p2), 1, `dnl
  * jr  060525 Turn off _MSL_OS_TIME_SUPPORT for NITRO regardless of PREFIX_NITRO.h
+')dnl
  */

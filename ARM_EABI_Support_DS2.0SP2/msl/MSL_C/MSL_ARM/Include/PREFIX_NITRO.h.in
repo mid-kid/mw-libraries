@@ -1,8 +1,15 @@
 /* MSL
  * Copyright © 1995-2006 Freescale Corporation.  All rights reserved.
  *
+ifelse(
+eval(LIBVER >= LIBVER_ds_2_0_p2), 1, `dnl
  * $Date: 2006/05/22 19:25:22 $
  * $Revision: 1.6.2.3 $
+',
+`dnl
+ * $Date: 2006/02/09 16:59:54 $
+ * $Revision: 1.6.2.2 $
+')dnl
  */
 
 #ifndef	__PREFIX_NITRO__
@@ -19,9 +26,11 @@
 
 #define _MSL_NEEDS_EXTRAS 1
 
+ifelse(eval(LIBVER >= LIBVER_ds_2_0_p2), 1, `dnl
 /* Resolve duplicate time() warning in DS2.0 */
 #define _MSL_OS_TIME_SUPPORT 0
 
+')dnl
 #define SDK_ARM9	1
 
 
@@ -29,4 +38,4 @@
 
 /* Change record:
  * cc  040322 Added for Nitro OS features
- */
+ */dnl
