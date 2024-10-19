@@ -1,8 +1,15 @@
 /* MSL
  * Copyright © 1995-2006 Freescale Corporation.  All rights reserved.
  *
+ifelse(
+eval(LIBVER >= LIBVER_ds_2_0_sp1p2), 1, `dnl
  * $Date: 2006/08/22 20:15:31 $
  * $Revision: 1.127.2.6 $
+',
+`dnl
+ * $Date: 2006/02/09 16:59:02 $
+ * $Revision: 1.127.2.5 $
+')dnl
  */
 
 // mslconfig
@@ -537,11 +544,19 @@
 #endif  // !defined(_MSL_SINGLE_THREAD) && !defined(_MSL_USE_PTHREADS) && \
 
 #ifndef _MSL_NO_TIME_SUPPORT
+ifelse(eval(LIBVER >= LIBVER_ds_2_0_sp1p2), 1, `dnl
 //	#ifdef _MSL_USING_MSL_C
 //		#if !_MSL_OS_TIME_SUPPORT || !_MSL_TIME_T_AVAILABLE
 			#define _MSL_NO_TIME_SUPPORT
 //		#endif
 //	#endif  // _MSL_USING_MSL_C
+', `dnl
+	#ifdef _MSL_USING_MSL_C
+		#if !_MSL_OS_TIME_SUPPORT || !_MSL_TIME_T_AVAILABLE
+			#define _MSL_NO_TIME_SUPPORT
+		#endif
+	#endif  // _MSL_USING_MSL_C
+')dnl
 #endif  // _MSL_NO_TIME_SUPPORT
 
 #ifdef __MWERKS__
@@ -562,7 +577,11 @@
 // cc  021031 Added <mslconfig_ARM> include
 // cc  030127 Added <mslconfig_E68K> include
 // JWW 030224 Changed __MSL_LONGLONG_SUPPORT__ flag into the new more configurable _MSL_LONGLONG
+ifelse(eval(LIBVER >= LIBVER_ds_2_0_sp1p2), 1, `dnl
 // hh  040217 Changed _No_Floating_Point to _MSL_NO_FLOATING_POINT
 // cc  060822 Removing implicit activation of C++ time support via C 
 //            _MSL_OS_TIME_SUPPORT flag, changing to explicit activation via C++ 
-//            _MSL_NO_TIME_SUPPORT in platform mslconfig file.
+//            _MSL_NO_TIME_SUPPORT in platform mslconfig file.dnl
+', `dnl
+// hh 040217 Changed _No_Floating_Point to _MSL_NO_FLOATING_POINT
+')dnl

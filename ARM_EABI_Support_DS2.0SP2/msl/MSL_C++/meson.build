@@ -13,10 +13,23 @@ sources = [
   'MSL_Common/Src/msl_time.cpp'
 ]
 
-headers_gen = []
+headers_subdirs = [
+  'MSL_Common/Include'
+]
+
+headers_gen_dep = []
+headers_gen_ins = []
+foreach dir : headers_subdirs
+  headers_gen = []
+  subdir(dir)
+  foreach header : headers_gen
+    headers_gen_dep += header
+    headers_gen_ins += [[dir, header]]
+  endforeach
+endforeach
 
 MSL_CPP_NITRO_dep = declare_dependency(
-  sources: headers_gen,
+  sources: headers_gen_dep,
   include_directories: [
     'MSL_Common/Include',
     'MSL_ARM/Include'
@@ -127,7 +140,6 @@ headers = [
   ['MSL_Common/Include', 'msl_thread'],
   ['MSL_Common/Include', 'msl_time'],
   ['MSL_Common/Include', 'msl_utility'],
-  ['MSL_Common/Include', 'mslconfig'],
   ['MSL_Common/Include', 'mslconfig_gcc'],
   ['MSL_Common/Include', 'new'],
   ['MSL_Common/Include', 'new.h'],
@@ -176,6 +188,14 @@ headers = [
 foreach hdr : headers
   custom_target(
     input: hdr[0] / hdr[1],
+    output: '@PLAINNAME@',
+    command: hdrconv_cmd,
+    install: true,
+    install_dir: install_sub / hdr[0])
+endforeach
+foreach hdr : headers_gen_ins
+  custom_target(
+    input: hdr[1],
     output: '@PLAINNAME@',
     command: hdrconv_cmd,
     install: true,
