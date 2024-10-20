@@ -17,7 +17,6 @@
 #include <limits.h>
 #include <stddef.h>
 #include <stdio.h>
-#include <algorithm.h>
 #include <string.h>
 
 #include "Profiler.h"

@@ -1,5 +1,6 @@
 project('mw-libraries', ['c', 'cpp'],
   meson_version: '>=1.2.0')
+fs = import('fs')
 
 m4 = find_program('m4')
 
@@ -78,21 +79,27 @@ elif libver >= libvers['ds/2.0/p2']
   mwccarm_ver = '3.0-118'
 elif libver >= libvers['ds/2.0/base']
   mwccarm_ver = '3.0-114'
+elif libver >= libvers['ds/1.2/sp4']
+  mwccarm_ver = '2.0-87'
 endif
 
 if libver >= libvers['ds/2.0/sp1p5']
   hdrconv_cmd = unix2dos_cmd
-else
+elif libver >= libvers['ds/2.0/base']
   hdrconv_cmd = dos2unix_cmd
+else
+  hdrconv_cmd = unix2dos_cmd
 endif
 
 args_base = [
   '-wrap:ver', mwccarm_ver,
   '-sym', 'off',
   '-opt', 'level=4,speed',
-  '-ipa', 'file',
   '-Cpp_exceptions', 'off',
   '-iso_templates', 'on',
+  libver >= libvers['ds/2.0/base']
+    ? ['-ipa', 'file']
+    : ['-flag', 'c99'],
   '-I-',
   libver_defs
 ]
@@ -113,14 +120,22 @@ args_pic_pid = [
   '-pic',
   '-pid'
 ]
+args_strb = [
+  '-include', 'PREFIX_NITRO_strb.h'
+]
 lib_variants = {
   'A_LE': args_a_le,
   'Ai_LE': args_ai_le,
-  'T_LE': args_t_le,
-  'A_LE_PIC_PID': [args_a_le, args_pic_pid],
-  'Ai_LE_PIC_PID': [args_ai_le, args_pic_pid],
-  'T_LE_PIC_PID': [args_t_le, args_pic_pid]
+  'T_LE': args_t_le
 }
+foreach var_name, var_args : lib_variants
+  lib_variants += {var_name + '_PIC_PID': var_args + args_pic_pid}
+endforeach
+if libver <= libvers['ds/1.2/sp4']
+  foreach var_name, var_args : lib_variants
+    lib_variants += {var_name + '_strb': var_args + args_strb}
+  endforeach
+endif
 
 NITROSDK_dep = declare_dependency(
   include_directories: 'NitroSDK/include')
@@ -130,11 +145,16 @@ if libver >= libvers['dsi/1.1']
   subdir('ARM_EABI_Support/msl/MSL_C++')
   subdir('ARM_EABI_Support/msl/MSL_Extras')
   subdir('ARM_EABI_Support/Runtime')
-else
+elif libver >= libvers['ds/2.0/base']
   subdir('ARM_EABI_Support_DS2.0SP2/msl/MSL_C')
   subdir('ARM_EABI_Support_DS2.0SP2/msl/MSL_C++')
   subdir('ARM_EABI_Support_DS2.0SP2/msl/MSL_Extras')
   subdir('ARM_EABI_Support_DS2.0SP2/Runtime')
+else
+  subdir('ARM_EABI_Support_DS1.2/msl/MSL_C')
+  subdir('ARM_EABI_Support_DS1.2/msl/MSL_C++')
+  subdir('ARM_EABI_Support_DS1.2/msl/MSL_Extras')
+  subdir('ARM_EABI_Support_DS1.2/Runtime')
 endif
 
 subdir('ARM_EABI_Support/Mathlib')

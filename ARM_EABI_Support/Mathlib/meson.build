@@ -8,16 +8,20 @@ elif libver >= libvers['ds/2.0/sp1p5']
   libdir = 'lib_ds_2.0_sp2p3'
 elif libver >= libvers['ds/2.0/sp1']
   libdir = 'lib_ds_2.0_sp1p2'
-else
+elif libver >= libvers['ds/2.0/base']
   libdir = 'lib_ds_2.0_p4'
+else
+  libdir = 'lib_ds_1.2_sp4'
 endif
 
 if libver >= libvers['dsi/1.2']
   readme = 'readme.txt'
 elif libver >= libvers['ds/2.0/sp1p5']
   readme = 'readme_dsi_1.1p1.txt'
-else
+elif libver >= libvers['ds/2.0/base']
   readme = 'readme_ds_2.0_sp1p2.txt'
+else
+  readme = 'readme_ds_1.2_sp4.txt'
 endif
 
 # Not decompiling/building these libraries for now

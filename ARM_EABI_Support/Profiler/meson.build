@@ -25,9 +25,12 @@ if libver >= libvers['dsi/1.3']
 elif libver >= libvers['dsi/1.1']
   wrap_ver = '4.0-1018'
   wrap_hack01 = '0'
-else
+elif libver >= libvers['ds/2.0/base']
   wrap_ver = '3.0-114'
   wrap_hack01 = '0014'
+else
+  wrap_ver = '2.0-87'
+  wrap_hack01 = '0'
 endif
 
 args = [
@@ -51,10 +54,18 @@ args_ai_le = [
   '-proc', 'arm7tdmi',
   '-interworking'
 ]
+args_strb = [
+  '-avoid_byte', 'all'
+]
 variants = {
   'A_LE': args_a_le,
   'Ai_LE': args_ai_le
 }
+if libver <= libvers['ds/1.2/sp4']
+  foreach var_name, var_args : variants
+    variants += {var_name + '_strb': var_args + args_strb}
+  endforeach
+endif
 
 ProfileLibrary_lib = []
 foreach var_suff, var_args : variants
