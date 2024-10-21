@@ -81,6 +81,14 @@ elif libver >= libvers['ds/2.0/base']
   mwccarm_ver = '3.0-114'
 elif libver >= libvers['ds/1.2/sp4']
   mwccarm_ver = '2.0-87'
+elif libver >= libvers['ds/1.2/sp3']
+  mwccarm_ver = '2.0-84'
+elif libver >= libvers['ds/1.2/sp2']
+  mwccarm_ver = '2.0-79'
+elif libver >= libvers['ds/1.2/base_b73']
+  mwccarm_ver = '2.0-73'
+elif libver >= libvers['ds/1.2/base']
+  mwccarm_ver = '2.0-72'
 endif
 
 if libver >= libvers['ds/2.0/sp1p5']
