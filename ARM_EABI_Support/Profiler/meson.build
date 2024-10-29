@@ -1,9 +1,5 @@
 install_sub = install_base / 'Profiler'
 
-# This library is matched by running the following command on the library:
-#     arm-none-eabi-strip -vgD -R .comment file.a
-# The debug information can't easily be matched.
-
 sources = [
   'Source/ProfilerCore.c',
   'Source/ProfilerARMMemory.c',
@@ -19,14 +15,12 @@ include_dirs = [
   'include'
 ]
 
+wrap_ver = '4.0-1034'
 if libver >= libvers['dsi/1.3']
-  wrap_ver = '4.0-1034'
   wrap_hack01 = '0004'
 elif libver >= libvers['dsi/1.1']
-  wrap_ver = '4.0-1018'
   wrap_hack01 = '0'
 elif libver >= libvers['ds/2.0/base']
-  wrap_ver = '3.0-114'
   wrap_hack01 = '0014'
 else
   wrap_ver = '2.0-87'
