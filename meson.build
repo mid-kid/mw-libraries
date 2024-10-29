@@ -154,10 +154,10 @@ if libver >= libvers['dsi/1.1']
   subdir('ARM_EABI_Support/msl/MSL_Extras')
   subdir('ARM_EABI_Support/Runtime')
 elif libver >= libvers['ds/2.0/base']
-  subdir('ARM_EABI_Support_DS2.0SP2/msl/MSL_C')
-  subdir('ARM_EABI_Support_DS2.0SP2/msl/MSL_C++')
-  subdir('ARM_EABI_Support_DS2.0SP2/msl/MSL_Extras')
-  subdir('ARM_EABI_Support_DS2.0SP2/Runtime')
+  subdir('ARM_EABI_Support_DS2.0/msl/MSL_C')
+  subdir('ARM_EABI_Support_DS2.0/msl/MSL_C++')
+  subdir('ARM_EABI_Support_DS2.0/msl/MSL_Extras')
+  subdir('ARM_EABI_Support_DS2.0/Runtime')
 else
   subdir('ARM_EABI_Support_DS1.2/msl/MSL_C')
   subdir('ARM_EABI_Support_DS1.2/msl/MSL_C++')
