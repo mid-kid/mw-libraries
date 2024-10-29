@@ -31,7 +31,7 @@ check-$2:
 	cat $(build)/$2.strip | \
 		sed 's/[^^]/[&]/g;s/\^/\\^/g;s/$$$$/$$$$/' | \
 		grep -vf - sums/$1/lib.sum > $(build)/$2.sum
-	cat sums/$1/strip.sum >> $(build)/$2.sum
+	cat sums/$1/strip.sum >> $(build)/$2.sum || true
 	cat $(build)/$2.strip | ( \
 		cd $(build)/install/lib/metroskrew/sdk/$1 && \
 		xargs -r $(STRIP) -vgD -R .comment )
