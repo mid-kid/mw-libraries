@@ -2,10 +2,6 @@ project('mw-libraries', ['c', 'cpp'],
   meson_version: '>=1.2.0')
 fs = import('fs')
 
-m4 = find_program('m4')
-
-fixar = executable('fixar', 'fixar.c', c_args: ['-Wall', '-Wextra'], native: true)
-
 libver = 17
 libvers = {
   'dsi/1.6sp1': 17,
@@ -31,24 +27,6 @@ libver_dir = get_option('libver')
 if libver_dir in libvers
   libver = libvers[libver_dir]
 endif
-
-libver_defs = ['-DLIBVER=' + libver.to_string()]
-foreach name, vers : libvers
-  libver_defs += [
-    '-DLIBVER_' + name.replace('/', '_').replace('.', '_') +
-    '=' + vers.to_string()]
-endforeach
-
-m4_cmd = [m4, libver_defs, '@INPUT@']
-unix2dos_cmd = ['sh', '-c',
-  'sed "$(echo cy8NJC8vO3MvJC8NLw | base64 -d)" < "$1" > "$2"; '
-  + 'if [ -n "$(tail -c -1 "$1")" ]; then '
-  + 'sed -e "$(echo JHMvDSQvLw | base64 -d)" -i "$2"; '
-  + 'fi',
-  '--', '@INPUT@', '@OUTPUT@']
-dos2unix_cmd = ['sh', '-c',
-  'sed "$(echo cy8NJC8v | base64 -d)" < "$1" > "$2"',
-  '--', '@INPUT@', '@OUTPUT@']
 
 install_base = get_option('libdir') / 'metroskrew/sdk/' + libver_dir
 
@@ -91,6 +69,8 @@ elif libver >= libvers['ds/1.2/base']
   mwccarm_ver = '2.0-72'
 endif
 
+subdir('tools')
+
 if libver >= libvers['ds/2.0/sp1p5']
   hdrconv_cmd = unix2dos_cmd
 elif libver >= libvers['ds/2.0/base']
@@ -109,7 +89,7 @@ args_base = [
     ? ['-ipa', 'file']
     : ['-flag', 'c99'],
   '-I-',
-  libver_defs
+  libver_arg
 ]
 
 args_a_le = [

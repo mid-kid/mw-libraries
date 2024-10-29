@@ -36,9 +36,9 @@ args = [
   '-Cpp_exceptions', 'off',
   '-warnings', 'off',
   '-char', 'signed',
-  '-I-',
   '-DLITTLE_ENDIAN',
-  libver_defs
+  '-I-',
+  libver_arg
 ]
 
 args_a_le = [
@@ -84,10 +84,6 @@ foreach var_suff, var_args : variants
     install_dir: install_sub / 'Lib')
 endforeach
 
-headers = [
-  ['include', 'Profiler.h'],
-]
-
 if libver >= libvers['dsi/1.1']
   cmd = unix2dos_cmd
 elif libver >= libvers['ds/2.0/p4']
@@ -96,11 +92,9 @@ else
   cmd = unix2dos_cmd
 endif
 
-foreach hdr : headers
-  custom_target(
-    input: hdr[0] / hdr[1],
-    output: '@PLAINNAME@',
-    command: cmd,
-    install: true,
-    install_dir: install_sub / hdr[0])
-endforeach
+custom_target(
+  input: 'include/Profiler.h',
+  output: '@PLAINNAME@',
+  command: cmd,
+  install: true,
+  install_dir: install_sub / 'include')
