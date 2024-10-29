@@ -1011,6 +1011,7 @@ void   *OS_GetThreadParameter(const OSThread *thread);
 int     OS_GetErrno(void);
 #endif
 
+#if LIBVER >= LIBVER_ds_1_2_sp3
 /*---------------------------------------------------------------------------*
   Name:         OS_IsThreadInList
 
@@ -1032,6 +1033,7 @@ BOOL    OS_IsThreadInList(const OSThread *thread);
   Returns:      None
  *---------------------------------------------------------------------------*/
 void    OS_SetThreadDestructorStack(void *stack);
+#endif
 
 
 #ifdef SDK_THREAD_INFINITY
@@ -1110,6 +1112,7 @@ static inline void *OSi_GetSpecificData(const OSThread *thread, int index)
 #endif
 
 
+#if LIBVER >= LIBVER_ds_1_2_sp3
 //================================================================================
 //              The following functions are for operations of thread struct.
 //              use carefully.
@@ -1143,6 +1146,7 @@ static inline OSThread *OS_GetNextThread(const OSThread *thread)
     SDK_ASSERT(thread);
     return thread->next;
 }
+#endif
 
 
 

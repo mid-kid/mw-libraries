@@ -302,6 +302,7 @@ static inline void OS_Halt(void)
 }
 #endif
 
+#if LIBVER >= LIBVER_ds_1_2_sp3
 /*---------------------------------------------------------------------------*
   Name:         OS_Exit
 
@@ -313,6 +314,7 @@ static inline void OS_Halt(void)
   Returns:      --  (Never return)
  *---------------------------------------------------------------------------*/
 extern void OS_Exit(int status);
+#endif
 
 //============================================================================
 //          WAIT

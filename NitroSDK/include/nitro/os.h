@@ -160,6 +160,10 @@ extern "C" {
 #ifdef	SDK_ARM9
 #include <nitro/os/ARM9/protectionRegion.h>
 #include <nitro/os/ARM9/tcm.h>
+// Hacks to align the number of definitions, which determines local labels
+// It's unknown what the actual differences between SDKs were.
+// No known versions otherwise align.
+#if LIBVER >= LIBVER_ds_1_2_sp3
 #include <nitro/os/ARM9/cache.h>
 #include <nitro/os/ARM9/protectionUnit.h>
 #include <nitro/os/ARM9/vramExclusive.h>
@@ -167,8 +171,15 @@ extern "C" {
 #if LIBVER >= LIBVER_ds_1_2_sp4
 #include <nitro/os/ARM9/argument.h>
 #else
-// Hack, realigns the amount of local symbols
+// Hack, I don't know what version of NitroSDK was used in ds/1.2/sp3
+// The version used is somewhere after NitroSDK-2_2a-050826 (used in sp2)
+// but before NitroSDK-3_0-060125 (used in the rest of versions)
 void _a(int a, int b, int c);
+#endif
+#else
+void _a(int a, int b, int c, int d, int e, int f, int g, int h);
+void _b(int a, int b, int c, int d, int e, int f, int g, int h);
+void _c(int a, int b, int c, int d);
 #endif
 #else  //SDK_ARM7
 #endif
