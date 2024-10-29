@@ -164,7 +164,12 @@ extern "C" {
 #include <nitro/os/ARM9/protectionUnit.h>
 #include <nitro/os/ARM9/vramExclusive.h>
 #include <nitro/os/ARM9/china.h>
+#if LIBVER >= LIBVER_ds_1_2_sp4
 #include <nitro/os/ARM9/argument.h>
+#else
+// Hack, realigns the amount of local symbols
+void _a(int a, int b, int c);
+#endif
 #else  //SDK_ARM7
 #endif
 
