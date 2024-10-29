@@ -136,11 +136,23 @@ sources = [
   'MSL_Common_Embedded/Math/Double_precision/w_sqrt.c'
 ]
 
-headers_gen = []
-subdir('MSL_Common/Include')
+headers_subdirs = [
+  'MSL_Common/Include'
+]
+
+headers_gen_dep = []
+headers_gen_ins = []
+foreach dir : headers_subdirs
+  headers_gen = []
+  subdir(dir)
+  foreach header : headers_gen
+    headers_gen_dep += header
+    headers_gen_ins += [[dir, header]]
+  endforeach
+endforeach
 
 MSL_C_NITRO_dep = declare_dependency(
-  sources: headers_gen,
+  sources: headers_gen_dep,
   include_directories: [
     'MSL_Common/Include',
     'MSL_ARM/Include'
@@ -158,7 +170,7 @@ include_dirs = [
 
 args = [
   args_base,
-  '-prefix', 'PREFIX_NITRO.h'
+  '-include', 'PREFIX_NITRO.h'
 ]
 
 MSL_C_NITRO_libs = []
@@ -170,6 +182,7 @@ foreach var_suff, var_args : lib_variants
     cpp_args: [args, var_args],
     dependencies: dependencies,
     include_directories: include_dirs,
+    implicit_include_directories: false,
     build_by_default: false,
     pic: false,
     name_prefix: '',
@@ -183,7 +196,7 @@ foreach var_suff, var_args : lib_variants
     install_dir: install_sub / 'MSL_ARM/Lib')
 endforeach
 
-install_headers(
+headers = [
   'MSL_ARM/Include/PREFIX_NITRO.h',
   'MSL_ARM/Include/ansi_prefix.ARM.h',
   'MSL_ARM/Include/ansi_prefix.ARM.size.h',
@@ -203,9 +216,6 @@ install_headers(
   'MSL_ARM/Include/setjmp.ARM.h',
   'MSL_ARM/Include/stdarg.ARM.h',
   'MSL_ARM/Include/stdio_aeabi.h',
-  install_dir: install_sub / 'MSL_ARM/Include')
-
-install_headers(
   'MSL_Common/Include/abort_exit.h',
   'MSL_Common/Include/ansi_files.h',
   'MSL_Common/Include/ansi_fp.h',
@@ -321,8 +331,19 @@ install_headers(
   'MSL_Common/Include/wstdio.h',
   'MSL_Common/Include/wstring.h',
   'MSL_Common/Include/wtime.h',
-  install_dir: install_sub / 'MSL_Common/Include')
+  'MSL_Common_Embedded/Math/Include/fdlibm.h'
+]
 
-install_headers(
-  'MSL_Common_Embedded/Math/Include/fdlibm.h',
-  install_dir: install_sub / 'MSL_Common_Embedded/Math/Include')
+headers_ins = []
+foreach header : headers
+  headers_ins += [[fs.parent(header), header]]
+endforeach
+
+foreach hdr : headers_ins + headers_gen_ins
+  custom_target(
+    input: hdr[1],
+    output: '@PLAINNAME@',
+    command: hdrconv_cmd,
+    install: true,
+    install_dir: install_sub / hdr[0])
+endforeach

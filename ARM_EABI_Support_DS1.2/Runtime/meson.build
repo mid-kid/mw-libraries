@@ -62,7 +62,7 @@ include_dirs = [
 
 args = [
   args_base,
-  '-Cpp_exceptions', 'on',
+  '-Cpp_exceptions', 'on'
 ]
 
 NITRO_Runtime_libs = []
@@ -95,21 +95,4 @@ foreach var_suff, var_args : lib_variants
     command: [fixar, '@OUTPUT@', '@INPUT@', var_sources],
     install: true,
     install_dir: install_sub / 'Lib')
-endforeach
-
-headers = [
-]
-
-headers_ins = []
-foreach header : headers
-  headers_ins += [[fs.parent(header), header]]
-endforeach
-
-foreach hdr : headers_ins + headers_gen_ins
-  custom_target(
-    input: hdr[1],
-    output: '@PLAINNAME@',
-    command: hdrconv_cmd,
-    install: true,
-    install_dir: install_sub / hdr[0])
 endforeach

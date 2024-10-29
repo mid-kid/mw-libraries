@@ -42,29 +42,34 @@ foreach var_suff, var_args : lib_variants
 endforeach
 
 headers = [
-  ['MSL_ARM/Include', 'extras.ARM.h'],
-  ['MSL_ARM/Include', 'utime.ARM.h'],
-  ['MSL_Common/Include', 'dirent.h'],
-  ['MSL_Common/Include', 'extras.h'],
-  ['MSL_Common/Include', 'extras_io.h'],
-  ['MSL_Common/Include', 'extras_malloc.h'],
-  ['MSL_Common/Include', 'extras_stdlib.h'],
-  ['MSL_Common/Include', 'extras_string.h'],
-  ['MSL_Common/Include', 'extras_time.h'],
-  ['MSL_Common/Include', 'extras_wchar.h'],
-  ['MSL_Common/Include', 'fcntl.h'],
-  ['MSL_Common/Include', 'unistd.h'],
-  ['MSL_Common/Include', 'unistd_api.h'],
-  ['MSL_Common/Include', 'unix.h'],
-  ['MSL_Common/Include', 'utime.h'],
-  ['MSL_Common/Include/sys', 'stat.h'],
-  ['MSL_Common/Include/sys', 'timeb.h'],
-  ['MSL_Common/Include/sys', 'utsname.h']
+  'MSL_ARM/Include/extras.ARM.h',
+  'MSL_ARM/Include/utime.ARM.h',
+  'MSL_Common/Include/dirent.h',
+  'MSL_Common/Include/extras.h',
+  'MSL_Common/Include/extras_io.h',
+  'MSL_Common/Include/extras_malloc.h',
+  'MSL_Common/Include/extras_stdlib.h',
+  'MSL_Common/Include/extras_string.h',
+  'MSL_Common/Include/extras_time.h',
+  'MSL_Common/Include/extras_wchar.h',
+  'MSL_Common/Include/fcntl.h',
+  'MSL_Common/Include/unistd.h',
+  'MSL_Common/Include/unistd_api.h',
+  'MSL_Common/Include/unix.h',
+  'MSL_Common/Include/utime.h',
+  'MSL_Common/Include/sys/stat.h',
+  'MSL_Common/Include/sys/timeb.h',
+  'MSL_Common/Include/sys/utsname.h'
 ]
 
-foreach hdr : headers
+headers_ins = []
+foreach header : headers
+  headers_ins += [[fs.parent(header), header]]
+endforeach
+
+foreach hdr : headers_ins
   custom_target(
-    input: hdr[0] / hdr[1],
+    input: hdr[1],
     output: '@PLAINNAME@',
     command: hdrconv_cmd,
     install: true,

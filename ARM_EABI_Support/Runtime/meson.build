@@ -1,8 +1,10 @@
 install_sub = install_base / 'Runtime'
 
-sources = [
+sources_1 = [
   '(Runtime_Common)/vla_alloc.c',
-  '(Runtime_Common)/cxxabi/cxxabi_clear.c',
+  '(Runtime_Common)/cxxabi/cxxabi_clear.c'
+]
+sources_2 = [
   'Runtime_ARM/(Common_Source)/__NITRO_eabi_init.c',
   'Runtime_ARM/(Common_Source)/_rt_fp_env_addr.c',
   'Runtime_ARM/(Common_Source)/_rt_fp_status_addr.c',
@@ -23,29 +25,15 @@ sources = [
   'Runtime_ARM/(Common_Source)/aeabi_alloca.cpp',
   'Runtime_ARM/(Common_Source)/ExceptionHandlerTS.cpp'
 ]
+
+sources = [
+  sources_1,
+  sources_2
+]
 sources_t = [
-  '(Runtime_Common)/vla_alloc.c',
-  '(Runtime_Common)/cxxabi/cxxabi_clear.c',
+  sources_1,
   'Runtime_ARM/(Common_Source)/Thumb_interworking.c',
-  'Runtime_ARM/(Common_Source)/__NITRO_eabi_init.c',
-  'Runtime_ARM/(Common_Source)/_rt_fp_env_addr.c',
-  'Runtime_ARM/(Common_Source)/_rt_fp_status_addr.c',
-  'Runtime_ARM/(Common_Source)/nitro_console_io.c',
-  'Runtime_ARM/(Common_Source)/rt_div0.c',
-  'Runtime_ARM/(Common_Source)/setjmp.c',
-  'Runtime_ARM/(Common_Source)/startup.c',
-  '(RISC_Common)/CompressedNumbers.cpp',
-  '(RISC_Common)/ExceptionHandler.cpp',
-  '(RISC_Common)/StaticInitializers.cpp',
-  '(Runtime_Common)/MWException.cpp',
-  '(Runtime_Common)/New.cpp',
-  '(Runtime_Common)/cxxabi/cxxabi_alloc.cpp',
-  '(Runtime_Common)/cxxabi/cxxabi_badeh.cpp',
-  '(Runtime_Common)/cxxabi/cxxabi_onetimeinit.cpp',
-  '(Runtime_Common)/cxxabi/cxxabi_ptmf.cpp',
-  '(Runtime_Common)/cxxabi/cxxabi_rtti.cpp',
-  'Runtime_ARM/(Common_Source)/aeabi_alloca.cpp',
-  'Runtime_ARM/(Common_Source)/ExceptionHandlerTS.cpp'
+  sources_2
 ]
 
 dependencies = [
@@ -85,6 +73,7 @@ foreach var_suff, var_args : lib_variants
     cpp_args: [args, var_args],
     dependencies: dependencies,
     include_directories: include_dirs,
+    implicit_include_directories: false,
     build_by_default: false,
     pic: false,
     name_prefix: '',
@@ -98,6 +87,20 @@ foreach var_suff, var_args : lib_variants
     install_dir: install_sub / 'Runtime_ARM/Runtime_NITRO/Lib')
 endforeach
 
-install_headers(
-  'Runtime_ARM/Runtime_NITRO/Common_Includes/alloca.h',
-  install_dir: install_sub / 'Runtime_ARM/Runtime_NITRO/Common_Includes')
+headers = [
+  'Runtime_ARM/Runtime_NITRO/Common_Includes/alloca.h'
+]
+
+headers_ins = []
+foreach header : headers
+  headers_ins += [[fs.parent(header), header]]
+endforeach
+
+foreach hdr : headers_ins
+  custom_target(
+    input: hdr[1],
+    output: '@PLAINNAME@',
+    command: hdrconv_cmd,
+    install: true,
+    install_dir: install_sub / hdr[0])
+endforeach

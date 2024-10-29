@@ -13,11 +13,23 @@ sources = [
   'MSL_Common/Src/strstream.cpp'
 ]
 
-headers_gen = []
-subdir('MSL_Common/Include')
+headers_subdirs = [
+  'MSL_Common/Include'
+]
+
+headers_gen_dep = []
+headers_gen_ins = []
+foreach dir : headers_subdirs
+  headers_gen = []
+  subdir(dir)
+  foreach header : headers_gen
+    headers_gen_dep += header
+    headers_gen_ins += [[dir, header]]
+  endforeach
+endforeach
 
 MSL_CPP_NITRO_dep = declare_dependency(
-  sources: headers_gen,
+  sources: headers_gen_dep,
   include_directories: [
     'MSL_Common/Include',
     'MSL_ARM/Include'
@@ -28,7 +40,8 @@ dependencies = [
   MSL_CPP_NITRO_dep
 ]
 
-include_dirs = []
+include_dirs = [
+]
 
 args = [
   args_base,
@@ -44,6 +57,7 @@ foreach var_suff, var_args : lib_variants
     cpp_args: [args, var_args],
     dependencies: dependencies,
     include_directories: include_dirs,
+    implicit_include_directories: false,
     build_by_default: false,
     pic: false,
     name_prefix: '',
@@ -57,11 +71,8 @@ foreach var_suff, var_args : lib_variants
     install_dir: install_sub / 'MSL_ARM/Lib')
 endforeach
 
-install_headers(
+headers = [
   'MSL_ARM/Include/mslconfig_ARM',
-  install_dir: install_sub / 'MSL_ARM/Include')
-
-install_headers(
   'MSL_Common/Include/MSLstring.h',
   'MSL_Common/Include/RefCountedPtrArray.h',
   'MSL_Common/Include/algorithm',
@@ -172,5 +183,19 @@ install_headers(
   'MSL_Common/Include/valarray.h',
   'MSL_Common/Include/vector',
   'MSL_Common/Include/vector.h',
-  'MSL_Common/Include/wiostream',
-  install_dir: install_sub / 'MSL_Common/Include')
+  'MSL_Common/Include/wiostream'
+]
+
+headers_ins = []
+foreach header : headers
+  headers_ins += [[fs.parent(header), header]]
+endforeach
+
+foreach hdr : headers_ins + headers_gen_ins
+  custom_target(
+    input: hdr[1],
+    output: '@PLAINNAME@',
+    command: hdrconv_cmd,
+    install: true,
+    install_dir: install_sub / hdr[0])
+endforeach

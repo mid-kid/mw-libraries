@@ -1,16 +1,12 @@
-install_hdr = install_sub / 'MSL_Common/Include'
+headers = [
+  'string.h.in',
+  'cstdlib.in'
+]
 
-headers = {
-  'string.h.in': 'string.h',
-  'cstdlib.in': 'cstdlib'
-}
-
-foreach src, out : headers
+foreach header : headers
   headers_gen += custom_target(
-    input: src,
-    output: out,
+    input: header,
+    output: '@BASENAME@',
     command: m4_cmd,
-    capture: true,
-    install: true,
-    install_dir: install_hdr)
+    capture: true)
 endforeach

@@ -1,11 +1,11 @@
 install_sub = install_base / 'msl/MSL_Extras'
 
-dependencies = [
-  MSL_C_NITRO_dep
-]
-
 sources = [
   'MSL_Common/Src/extras.c'
+]
+
+dependencies = [
+  MSL_C_NITRO_dep
 ]
 
 include_dirs = [
@@ -27,6 +27,7 @@ foreach var_suff, var_args : lib_variants
     cpp_args: [args, var_args],
     dependencies: dependencies,
     include_directories: include_dirs,
+    implicit_include_directories: false,
     build_by_default: false,
     pic: false,
     name_prefix: '',
@@ -40,12 +41,9 @@ foreach var_suff, var_args : lib_variants
     install_dir: install_sub / 'MSL_ARM/Lib')
 endforeach
 
-install_headers(
+headers = [
   'MSL_ARM/Include/extras.ARM.h',
   'MSL_ARM/Include/utime.ARM.h',
-  install_dir: install_sub / 'MSL_ARM/Include')
-
-install_headers(
   'MSL_Common/Include/dirent.h',
   'MSL_Common/Include/extras.h',
   'MSL_Common/Include/extras_io.h',
@@ -59,10 +57,21 @@ install_headers(
   'MSL_Common/Include/unistd_api.h',
   'MSL_Common/Include/unix.h',
   'MSL_Common/Include/utime.h',
-  install_dir: install_sub / 'MSL_Common/Include')
-
-install_headers(
   'MSL_Common/Include/sys/stat.h',
   'MSL_Common/Include/sys/timeb.h',
-  'MSL_Common/Include/sys/utsname.h',
-  install_dir: install_sub / 'MSL_Common/Include/sys')
+  'MSL_Common/Include/sys/utsname.h'
+]
+
+headers_ins = []
+foreach header : headers
+  headers_ins += [[fs.parent(header), header]]
+endforeach
+
+foreach hdr : headers_ins
+  custom_target(
+    input: hdr[1],
+    output: '@PLAINNAME@',
+    command: hdrconv_cmd,
+    install: true,
+    install_dir: install_sub / hdr[0])
+endforeach
