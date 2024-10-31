@@ -2,6 +2,9 @@ project('mw-libraries', ['c', 'cpp'],
   meson_version: '>=1.2.0')
 fs = import('fs')
 
+proj_libdir = get_option('libdir') / 'metroskrew'
+proj_datadir = get_option('datadir') / 'metroskrew'
+
 libver = 17
 libvers = {
   'dsi/1.6sp1': 17,
@@ -23,12 +26,32 @@ libvers = {
   'ds/1.2/base_b73': 1,
   'ds/1.2/base': 0
 }
+libvers_compat = {
+  'dsi/1.6sp2': 'dsi/1.6sp1',
+  'dsi/1.3p1': 'dsi/1.3',
+  'dsi/1.2p2': 'dsi/1.2',
+  'dsi/1.2p1': 'dsi/1.2',
+  'ds/2.0/sp2p4': 'ds/2.0/sp2p3',
+  'ds/2.0/sp2p2': 'ds/2.0/sp2',
+  'ds/2.0/sp1p7': 'ds/2.0/sp1p5',
+  'ds/2.0/sp1p6': 'ds/2.0/sp1p5',
+  'ds/2.0/sp1p1': 'ds/2.0/sp1',
+  'ds/1.2/sp4p1': 'ds/1.2/sp4',
+  'ds/1.2/sp3p2': 'ds/1.2/sp3',
+  'ds/1.2/sp2p3': 'ds/1.2/sp2',
+}
+
 libver_dir = get_option('libver')
+if libver_dir in libvers_compat
+  libver_dir = libvers_compat[libver_dir]
+endif
 if libver_dir in libvers
   libver = libvers[libver_dir]
+else
+  error('Unknown libver:', libver)
 endif
 
-install_base = get_option('libdir') / 'metroskrew/sdk/' + libver_dir
+install_base = proj_libdir / 'sdk' / libver_dir
 
 if libver >= libvers['dsi/1.6sp1']
   mwccarm_ver = '4.0-1051'
@@ -47,6 +70,7 @@ elif libver >= libvers['ds/2.0/sp2']
 elif libver >= libvers['ds/2.0/sp1p5']
   #mwccarm_ver = '3.0-127'  # Missing compiler
   #mwccarm_ver = '3.0-126'  # Close match but not complete
+  error('Cannot build ds/2.0/sp1p5 yet!')
 elif libver >= libvers['ds/2.0/sp1p2']
   mwccarm_ver = '3.0-126'
 elif libver >= libvers['ds/2.0/sp1']
@@ -147,3 +171,4 @@ endif
 
 subdir('ARM_EABI_Support/Mathlib')
 subdir('ARM_EABI_Support/Profiler')
+subdir('data')
