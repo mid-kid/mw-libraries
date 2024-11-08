@@ -12,11 +12,7 @@ CROSS := meson/mwccarm.ini
 build := build
 
 libver := dsi/1.6sp1
-libver_all := \
-	dsi/1.6sp1 dsi/1.3 dsi/1.2 dsi/1.1p1 dsi/1.1 \
-	ds/2.0/sp2p3 ds/2.0/sp2 ds/2.0/sp1p2 ds/2.0/sp1 \
-	ds/2.0/p4 ds/2.0/p2 ds/2.0/base \
-	ds/1.2/sp4 ds/1.2/sp3 ds/1.2/sp2 ds/1.2/base_b73 ds/1.2/base
+libver_all := $(shell sed 's/#.*$$//;/^\s*$$/d' libvers.txt)
 
 build_ver := $(build)/$(subst /,_,$(libver))
 
