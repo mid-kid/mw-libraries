@@ -20,13 +20,18 @@ libver_all := \
 
 build_ver := $(build)/$(subst /,_,$(libver))
 
+.NOTPARALLEL: check
 .PHONY: check
 check:
+
+.NOTPARALLEL: full
+.PHONY: full
+full:
+
 define defver
 check: check-$2
 .PHONY: check-$2
-check-$2:
-	$(MAKE) libver=$1 package
+check-$2: full-$2
 	cat sums/$1/strip.sum | sed 's/^[^ ]* \*\?//' > $(build)/$2.strip
 	cat $(build)/$2.strip | \
 		sed 's/[^^]/[&]/g;s/\^/\\^/g;s/$$$$/$$$$/' | \
@@ -38,6 +43,11 @@ check-$2:
 	cat $(build)/$2.sum | ( \
 		cd $(build)/install/lib/metroskrew/sdk/$1 && \
 		sha1sum --quiet -c - )
+
+full: full-$2
+.PHONY: full-$2
+full-$2:
+	+$(MAKE) $(MAKEFLAGS) libver=$1 package
 endef
 $(foreach v,$(libver_all),$(eval $(call defver,$v,$(subst /,_,$v))))
 
