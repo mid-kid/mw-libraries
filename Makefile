@@ -16,6 +16,8 @@ libver_all := $(shell sed 's/#.*$$//;/^\s*$$/d' libvers.txt)
 
 build_ver := $(build)/$(subst /,_,$(libver))
 
+export MSYS2_ARG_CONV_EXCL := *
+
 .NOTPARALLEL: check
 .PHONY: check
 check:
