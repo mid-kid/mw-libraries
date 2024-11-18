@@ -23,9 +23,9 @@ m4 = find_program('m4')
 
 m4_cmd = [m4, libver_hdr_m4, '@INPUT@']
 unix2dos_cmd = ['sh', '-c',
-  'sed "$(echo cy8NJC8vO3MvJC8NLw | base64 -d)" < "$1" > "$2"; '
+  'sed "$(echo cy8NJC8vO3MvJC8NLw== | base64 -d)" < "$1" > "$2"; '
   + 'if [ -n "$(tail -c -1 "$1")" ]; then '
-  + 'sed -e "$(echo JHMvDSQvLw | base64 -d)" -i "$2"; '
+  + 'sed -e "$(echo JHMvDSQvLw== | base64 -d)" -i "$2"; '
   + 'fi',
   '--', '@INPUT@', '@OUTPUT@']
 dos2unix_cmd = ['sh', '-c',
